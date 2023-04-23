@@ -1,28 +1,18 @@
 import { default as axios } from "axios";
 import axiosRateLimit from "axios-rate-limit";
+import { searchForArtist } from "./searchForArtist";
 const rateLimitedAxios = axiosRateLimit(axios.create(), {
   maxRequests: 2, // Max number of requests in a given time period
   perMilliseconds: 1000, // Time period in milliseconds
 });
 export const addArtistToPlaylist = async (
-  artist,
-  access_token,
-  graspop_playlist_id
+  artist: string,
+  access_token: string,
+  graspop_playlist_id: string
 ) => {
   try {
     console.log(`start adding ${artist}`);
-    const {
-      data: { artists: artist_data },
-    } = await axios.get(
-      `https://api.spotify.com/v1/search?q=${artist}&type=artist&limit=1`,
-      {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
-      }
-    );
-    console.log("found artist id");
-    const artist_id = artist_data.items[0].id;
+    const artist_id = await searchForArtist(artist, access_token);
     const {
       data: { tracks: track_data },
     } = await axios.get(
