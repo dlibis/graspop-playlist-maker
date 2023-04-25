@@ -18,11 +18,49 @@ import { fetchBands } from "@/services/listOfBandsGetter";
 import { getAlbumTracks } from "./services/getAlbumTracks";
 import { addTracksToPlaylist } from "./services/addTracksToPlaylist";
 import cors from "cors";
+import corsAnywhere from "cors-anywhere";
+import { JSDOM } from "jsdom";
+import { axiosRequest } from "@/utils";
 
 const app: Express = express();
+
 const client = createClient();
 client.connect();
 app.use(cors());
+
+const attachAuthorization = async (req, res, next) => {
+  let access_token = await client.get("access_token");
+  if (!access_token) {
+    const refresh_token = await client.get("refresh_token");
+    access_token = await refreshToken(client, refresh_token);
+  }
+  const url = req.url;
+  if (url === "/secure") {
+    req.authorization = "Bearer <insert token here>";
+  }
+  next();
+};
+
+const headers = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+  "Accept-Language": "en-US,en;q=0.9",
+  accept: "text/html",
+};
+// proxy server
+let proxy = corsAnywhere.createServer({
+  originWhitelist: [], // Allow all origins
+  requireHeaders: [], // Do not require any headers.
+  removeHeaders: [], // Do not remove any headers.
+  credentials: "include",
+  setHeaders: headers, // set the headers in the request
+});
+
+/* Attach our cors proxy to the existing API on the /proxy endpoint. */
+app.get("/proxy/:proxyUrl*", (req, res) => {
+  req.url = req.url.replace("/proxy/", "/"); // Strip '/proxy' from the front of the URL, else the proxy won't work.
+  proxy.emit("request", req, res);
+});
 
 app.get("/bands", async (req: Request, res: Response) => {
   const bands = await fetchBands();
@@ -72,49 +110,62 @@ app.get("/get-bands", async (req, res) => {
   res.send("ok");
 });
 
-app.get("/user", async (req, res) => {
-  const type = <string>req.query.type;
-  let access_token = await client.get("access_token");
-  if (!access_token) {
-    const refresh_token = await client.get("refresh_token");
-    access_token = await refreshToken(client, refresh_token);
+//get data from spotify
+
+app.get("/data", async (req, res) => {
+  try {
+    let query = <string>req.query.query;
+    let access_token = await client.get("access_token");
+    if (!access_token) {
+      const refresh_token = await client.get("refresh_token");
+      access_token = await refreshToken(client, refresh_token);
+    }
+    const { data } = await axios.get(query, {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    });
+    res.send(data);
+  } catch (e) {
+    res.status(403).json({});
   }
-  const path = type
-    ? `https://api.spotify.com/v1/me/${type}`
-    : `https://api.spotify.com/v1/me`;
-  const { data } = await axios.get(path, {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-  });
-  res.send({ data });
 });
 
 app.get("/get-artist", async (req, res) => {
   const artist = <string>req.query.artist;
   const playlist_id = <string | undefined>req.query.id;
+  const full = <"true" | "false">req.query.full;
   let access_token = await client.get("access_token");
   if (!access_token) {
     const refresh_token = await client.get("refresh_token");
     access_token = await refreshToken(client, refresh_token);
   }
   const artist_id = await searchForArtist(artist!, access_token!);
-  const albums = await getArtistsAlbums(artist_id, access_token);
-  for (const [i, album] of albums.entries()) {
-    console.log(
-      `adding tracks from ${album.name} index: ${i + 1}/${albums.length}`
+  if (full === "false") {
+    const { tracks: track_data } = await axiosRequest(
+      `https://api.spotify.com/v1/artists/${artist_id}/top-tracks?market=US`,
+      access_token
     );
-    const { total, limit } = await getAlbumTracks(album.id, access_token);
-    // calculate needed iterations
-    const iter = Math.ceil(total / limit);
-    for (let i = 0; i < iter; i++) {
-      const { items: tracks } = await getAlbumTracks(
-        album.id,
-        access_token,
-        50 * i
+    const tracks_uri = track_data.map(({ uri }) => uri);
+    await addTracksToPlaylist(tracks_uri, access_token!, playlist_id);
+  } else {
+    const albums = await getArtistsAlbums(artist_id, access_token);
+    for (const [i, album] of albums.entries()) {
+      console.log(
+        `adding tracks from ${album.name} index: ${i + 1}/${albums.length}`
       );
-      const tracks_uri: string[] = tracks.map(({ uri }) => uri);
-      await addTracksToPlaylist(tracks_uri, access_token!, playlist_id);
+      const { total, limit } = await getAlbumTracks(album.id, access_token);
+      // calculate needed iterations
+      const iter = Math.ceil(total / limit);
+      for (let i = 0; i < iter; i++) {
+        const { items: tracks } = await getAlbumTracks(
+          album.id,
+          access_token,
+          50 * i
+        );
+        const tracks_uri: string[] = tracks.map(({ uri }) => uri);
+        await addTracksToPlaylist(tracks_uri, access_token!, playlist_id);
+      }
     }
   }
   res.send("done");

@@ -1,8 +1,8 @@
 Arguments: 
-  /home/dlibis/.local/share/fnm/node-versions/v18.15.0/installation/bin/node /run/user/1002/fnm_multishells/35322_1681551191935/bin/yarn add tsconfing-paths --dev
+  /home/dlibis/.local/share/fnm/node-versions/v18.15.0/installation/bin/node /run/user/1002/fnm_multishells/7419_1682247445089/bin/yarn add @types/cors-anywhere --dev
 
 PATH: 
-  /run/user/1002/fnm_multishells/35322_1681551191935/bin:/home/dlibis/.local/share/fnm:/run/user/1002/fnm_multishells/34410_1681550827305/bin:/home/dlibis/.local/share/fnm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+  /run/user/1002/fnm_multishells/7419_1682247445089/bin:/home/dlibis/.local/share/fnm:/run/user/1002/fnm_multishells/3324_1682239817480/bin:/home/dlibis/.local/share/fnm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 Yarn version: 
   1.22.19
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/tsconfing-paths: Not found
+  Error: https://registry.yarnpkg.com/@types%2fcors-anywhere: Not found
       at params.callback [as _callback] (/home/dlibis/.local/share/fnm/node-versions/v18.15.0/installation/lib/node_modules/yarn/lib/cli.js:66145:18)
       at self.callback (/home/dlibis/.local/share/fnm/node-versions/v18.15.0/installation/lib/node_modules/yarn/lib/cli.js:140890:22)
       at Request.emit (node:events:513:28)
@@ -33,7 +33,7 @@ npm manifest:
     "description": "",
     "main": "index.js",
     "scripts": {
-      "start": "nodemon --inspect -e ts --exec 'ts-node src/index.ts'",
+      "start": "nodemon --inspect -e ts --exec 'ts-node -r tsconfig-paths/register src/index.ts'",
       "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],
@@ -42,6 +42,8 @@ npm manifest:
     "dependencies": {
       "axios": "^1.3.5",
       "axios-rate-limit": "^1.3.0",
+      "cors": "^2.8.5",
+      "cors-anywhere": "^0.4.4",
       "dotenv": "^16.0.3",
       "express": "^4.18.2",
       "jsdom": "^21.1.1",
@@ -51,10 +53,12 @@ npm manifest:
     },
     "devDependencies": {
       "@types/axios": "^0.14.0",
+      "@types/cors": "^2.8.13",
       "@types/express": "^4.17.17",
       "@types/jsdom": "^21.1.1",
       "@types/node": "^18.15.11",
       "@types/redis": "^4.0.11",
+      "tsconfig-paths": "^4.2.0",
       "tsconfig.json": "^1.0.11"
     }
   }
@@ -125,6 +129,13 @@ Lockfile:
     version "3.4.35"
     resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.35.tgz#5fcf6ae445e4021d1fc2219a4873cc73a3bb2ad1"
     integrity sha512-cdeYyv4KWoEgpBISTxWvqYsVy444DOqehiF3fM3ne10AmJ62RSyNkUnxMJXHQWRQQX2eR94m5y1IZyDwBjV9FQ==
+    dependencies:
+      "@types/node" "*"
+  
+  "@types/cors@^2.8.13":
+    version "2.8.13"
+    resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.13.tgz#b8ade22ba455a1b8cb3b5d3f35910fd204f84f94"
+    integrity sha512-RG8AStHlUiV5ysZQKq97copd2UmVYw3/pRMLefISZ3S1hK104Cwm7iLQ3fTKx+lsUH2CE8FlLaYeEA2LSeqYUA==
     dependencies:
       "@types/node" "*"
   
@@ -441,6 +452,22 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.5.0.tgz#d1f5d71adec6558c58f389987c366aa47e994f8b"
     integrity sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==
   
+  cors-anywhere@^0.4.4:
+    version "0.4.4"
+    resolved "https://registry.yarnpkg.com/cors-anywhere/-/cors-anywhere-0.4.4.tgz#98892fcab55f408fff13a63e125135c18dc22ca8"
+    integrity sha512-8OBFwnzMgR4mNrAeAyOLB2EruS2z7u02of2bOu7i9kKYlZG+niS7CTHLPgEXKWW2NAOJWRry9RRCaL9lJRjNqg==
+    dependencies:
+      http-proxy "1.11.1"
+      proxy-from-env "0.0.1"
+  
+  cors@^2.8.5:
+    version "2.8.5"
+    resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.5.tgz#eac11da51592dd86b9f06f6e7ac293b3df875d29"
+    integrity sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==
+    dependencies:
+      object-assign "^4"
+      vary "^1"
+  
   cssstyle@^3.0.0:
     version "3.0.0"
     resolved "https://registry.yarnpkg.com/cssstyle/-/cssstyle-3.0.0.tgz#17ca9c87d26eac764bb8cfd00583cff21ce0277a"
@@ -571,6 +598,11 @@ Lockfile:
     version "1.8.1"
     resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
     integrity sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==
+  
+  eventemitter3@1.x.x:
+    version "1.2.0"
+    resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-1.2.0.tgz#1c86991d816ad1e504750e73874224ecf3bec508"
+    integrity sha512-DOFqA1MF46fmZl2xtzXR3MPCRsXqgoFqdXcrCVYM3JNnfUeHTm/fh/v/iU7gBFpwkuBmoJPAm5GuhdDfSEJMJA==
   
   express@^4.18.2:
     version "4.18.2"
@@ -749,6 +781,14 @@ Lockfile:
       agent-base "6"
       debug "4"
   
+  http-proxy@1.11.1:
+    version "1.11.1"
+    resolved "https://registry.yarnpkg.com/http-proxy/-/http-proxy-1.11.1.tgz#71df55757e802d58ea810df2244019dda05ae85d"
+    integrity sha512-qz7jZarkVG3G6GMq+4VRJPSN4NkIjL4VMTNhKGd8jc25BumeJjWWvnY3A7OkCGa8W1TTxbaK3dcE0ijFalITVA==
+    dependencies:
+      eventemitter3 "1.x.x"
+      requires-port "0.x.x"
+  
   https-proxy-agent@^5.0.1:
     version "5.0.1"
     resolved "https://registry.yarnpkg.com/https-proxy-agent/-/https-proxy-agent-5.0.1.tgz#c59ef224a04fe8b754f3db0063a25ea30d0005d6"
@@ -871,6 +911,11 @@ Lockfile:
       ws "^8.13.0"
       xml-name-validator "^4.0.0"
   
+  json5@^2.2.2:
+    version "2.2.3"
+    resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
+    integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
+  
   levn@~0.3.0:
     version "0.3.0"
     resolved "https://registry.yarnpkg.com/levn/-/levn-0.3.0.tgz#3b09924edf9f083c0490fdd4c0bc4421e04764ee"
@@ -927,6 +972,11 @@ Lockfile:
     integrity sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==
     dependencies:
       brace-expansion "^1.1.7"
+  
+  minimist@^1.2.6:
+    version "1.2.8"
+    resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
+    integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
   
   ms@2.0.0:
     version "2.0.0"
@@ -985,6 +1035,11 @@ Lockfile:
     version "2.2.3"
     resolved "https://registry.yarnpkg.com/nwsapi/-/nwsapi-2.2.3.tgz#00e04dfd5a4a751e5ec2fecdc75dfd2f0db820fa"
     integrity sha512-jscxIO4/VKScHlbmFBdV1Z6LXnLO+ZR4VMtypudUdfwtKxUN3TQcNFIHLwKtrUbDyHN4/GycY9+oRGZ2XMXYPw==
+  
+  object-assign@^4:
+    version "4.1.1"
+    resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
+    integrity sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==
   
   object-inspect@^1.9.0:
     version "1.12.3"
@@ -1057,6 +1112,11 @@ Lockfile:
       forwarded "0.2.0"
       ipaddr.js "1.9.1"
   
+  proxy-from-env@0.0.1:
+    version "0.0.1"
+    resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-0.0.1.tgz#b27c4946e9e6d5dbadb7598a6435d3014c4cfd49"
+    integrity sha512-B9Hnta3CATuMS0q6kt5hEezOPM+V3dgaRewkFtFoaRQYTVNsHqUvFXmndH06z3QO1ZdDnRELv5vfY6zAj/gG7A==
+  
   proxy-from-env@^1.1.0:
     version "1.1.0"
     resolved "https://registry.yarnpkg.com/proxy-from-env/-/proxy-from-env-1.1.0.tgz#e102f16ca355424865755d2c9e8ea4f24d58c3e2"
@@ -1122,6 +1182,11 @@ Lockfile:
       "@redis/json" "1.0.4"
       "@redis/search" "1.1.2"
       "@redis/time-series" "1.0.4"
+  
+  requires-port@0.x.x:
+    version "0.0.1"
+    resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-0.0.1.tgz#4b4414411d9df7c855995dd899a8c78a2951c16d"
+    integrity sha512-AzPDCliPoWDSvEVYRQmpzuPhGGEnPrQz9YiOEvn+UdB9ixBpw+4IOZWtwctmpzySLZTy7ynpn47V14H4yaowtA==
   
   requires-port@^1.0.0:
     version "1.0.0"
@@ -1267,6 +1332,11 @@ Lockfile:
     dependencies:
       ansi-regex "^4.1.0"
   
+  strip-bom@^3.0.0:
+    version "3.0.0"
+    resolved "https://registry.yarnpkg.com/strip-bom/-/strip-bom-3.0.0.tgz#2334c18e9c759f7bdd56fdef7e9ae3d588e68ed3"
+    integrity sha512-vavAMRXOgBVNF6nyEEmL3DBK19iRpDcoIwW+swQ+CbGiu7lju6t+JklA1MHweoWtadgt4ISVUsXLyDq34ddcwA==
+  
   supports-color@^5.3.0, supports-color@^5.5.0:
     version "5.5.0"
     resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-5.5.0.tgz#e2e69a44ac8772f78a1ec0b35b689df6530efc8f"
@@ -1332,6 +1402,15 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/tsc/-/tsc-2.0.4.tgz#5f6499146abea5dca4420b451fa4f2f9345238f5"
     integrity sha512-fzoSieZI5KKJVBYGvwbVZs/J5za84f2lSTLPYf6AGiIf43tZ3GNrI1QzTLcjtyDDP4aLxd46RTZq1nQxe7+k5Q==
   
+  tsconfig-paths@^4.2.0:
+    version "4.2.0"
+    resolved "https://registry.yarnpkg.com/tsconfig-paths/-/tsconfig-paths-4.2.0.tgz#ef78e19039133446d244beac0fd6a1632e2d107c"
+    integrity sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==
+    dependencies:
+      json5 "^2.2.2"
+      minimist "^1.2.6"
+      strip-bom "^3.0.0"
+  
   tsconfig.json@^1.0.11:
     version "1.0.11"
     resolved "https://registry.yarnpkg.com/tsconfig.json/-/tsconfig.json-1.0.11.tgz#7972872fb9c0c6ec49b1520c330a85a7a979feef"
@@ -1387,7 +1466,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
     integrity sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==
   
-  vary@~1.1.2:
+  vary@^1, vary@~1.1.2:
     version "1.1.2"
     resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
     integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
