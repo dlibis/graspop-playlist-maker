@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { api_url } from "@/constants";
+import { api_url, lastfm_api } from "@/constants";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -40,21 +40,29 @@ export default function Home({
   const debounced = useDebouncedCallback(
     // function
     async (value) => {
-      console.log(value);
+      if (value === "") return;
+      // const data = await fetch(
+      //   `https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=${value}&api_key=${lastfm_api}&format=json&limit=20`
+      // );
+      // const {
+      //   similarartists: { artist: artists },
+      // } = await data.json();
+      // console.log(value);
       const query = encodeURIComponent(
         `https://api.spotify.com/v1/search?q=${value}&type=artist&market=US&limit=1`
       );
       const res = await fetch(`${api_url}/data?query=${query}`);
       const {
-        artists: { items },
+        artists: { items = [] },
       } = await res.json();
       const [{ id }] = items;
       const res2 = await fetch(
-        `${api_url}/data?query=https://api.spotify.com/v1/artists/${id}/related-artists`
+        `${api_url}/data?query=https://api.spotify.com/v1/recommendations?seed_artists=${id}&market=US`
       );
-      const { artists } = await res2.json();
-      setRecomArtists(artists);
-      console.log(items);
+      const { tracks } = await res2.json();
+      const filterArt =
+        //const filterArt = artists.filter((el) => el.popularity < 50);
+        setRecomArtists(filterArt);
     },
     // delay in ms
     500
@@ -164,11 +172,11 @@ export default function Home({
                 {(recomArtists || []).map((el) => (
                   <div className="flex flex-col items-center">
                     <img
-                      className="h-[160px] w-[160px] object-cover"
-                      src={el.images.at(0).url}
+                      className="h-[160px] w-[160px] object-cover object-top"
+                      src={el.images.at(-1)["url"]}
                     />
                     <p className="mt-2">{el.name}</p>
-                    <p className="text-slate-500">{el.genres[0]}</p>
+                    {/* <p className="text-slate-500">{el.genres[0]}</p> */}
                   </div>
                 ))}
               </div>
@@ -187,8 +195,8 @@ export async function getStaticProps() {
       fetch(`${api_url}/data?query=https://api.spotify.com/v1/me/playlists`),
     ]);
     const [user, playlists] = await Promise.all(res.map((r) => r.json()));
-    const { display_name } = user;
-    const { items: playlists_items } = playlists;
+    const { display_name = null } = user;
+    const { items: playlists_items = [] } = playlists;
 
     return { props: { display_name, playlists_items } };
   } catch (e: any) {
