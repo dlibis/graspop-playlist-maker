@@ -22,6 +22,8 @@ import corsAnywhere from "cors-anywhere";
 import { JSDOM } from "jsdom";
 import { axiosRequest } from "@/utils";
 
+import musicBrainzRoute from "@/routes/musicBrainzData";
+
 const app: Express = express();
 
 const client = createClient();
@@ -50,7 +52,7 @@ const headers = {
 // proxy server
 let proxy = corsAnywhere.createServer({
   originWhitelist: [], // Allow all origins
-  requireHeaders: [], // Do not require any headers.
+  //requireHeaders: [], // Do not require any headers.
   removeHeaders: [], // Do not remove any headers.
   credentials: "include",
   setHeaders: headers, // set the headers in the request
@@ -78,6 +80,8 @@ app.get("/bands", async (req: Request, res: Response) => {
 //     `https://accounts.spotify.com/authorize?client_id=${spotify_client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${scope}`
 //   );
 // });
+
+app.use("/brainz", musicBrainzRoute);
 
 app.get("/get-bands", async (req, res) => {
   try {

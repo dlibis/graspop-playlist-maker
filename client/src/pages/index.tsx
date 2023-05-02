@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { api_url, lastfm_api } from "@/constants";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
+import axios from "axios";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,28 +42,52 @@ export default function Home({
     // function
     async (value) => {
       if (value === "") return;
-      // const data = await fetch(
-      //   `https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=${value}&api_key=${lastfm_api}&format=json&limit=20`
-      // );
-      // const {
-      //   similarartists: { artist: artists },
-      // } = await data.json();
-      // console.log(value);
-      const query = encodeURIComponent(
-        `https://api.spotify.com/v1/search?q=${value}&type=artist&market=US&limit=1`
+      const data = await fetch(
+        `https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=${value}&api_key=${lastfm_api}&format=json&limit=20`
       );
-      const res = await fetch(`${api_url}/data?query=${query}`);
-      const {
-        artists: { items = [] },
-      } = await res.json();
-      const [{ id }] = items;
-      const res2 = await fetch(
-        `${api_url}/data?query=https://api.spotify.com/v1/recommendations?seed_artists=${id}&market=US`
+      const { similarartists: { artist: similarArtistsArr } = { artist: [] } } =
+        await data.json();
+
+      await Promise.all(
+        similarArtistsArr.map(async (el) => {
+          try {
+            const query = encodeURIComponent(
+              `https://api.spotify.com/v1/search?q=${el.name}&type=artist&market=US&limit=1`
+            );
+            const url = `${api_url}/proxy/https://www.last.fm/music/${el.name}/+images`;
+            const { data: html } = await axios.get(url, {
+              responseType: "text",
+              headers: { accept: "text/html" },
+            });
+
+            // Step 2: Parse the HTML using a DOM parser
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+
+            // Step 3: Select the container element that holds the images
+            const img = doc
+              .querySelector(".image-list-item > img")
+              ?.getAttribute("src");
+
+            // Step 5: Store the image URLs or use them as needed
+            el["images"] = img;
+
+            const {
+              data: { artists },
+            } = await axios.get(`${api_url}/data?query=${query}`);
+            const {
+              items: [artistData],
+            } = artists;
+            console.log(artistData);
+            el["genres"] = artistData.genres;
+            el["href"] = artistData.external_urls.spotify;
+            // })
+          } catch (e: any) {
+            console.log(e);
+          }
+        })
       );
-      const { tracks } = await res2.json();
-      const filterArt =
-        //const filterArt = artists.filter((el) => el.popularity < 50);
-        setRecomArtists(filterArt);
+      setRecomArtists(similarArtistsArr);
     },
     // delay in ms
     500
@@ -146,7 +171,7 @@ export default function Home({
                     )
                   )}
                 </select>
-                <div className="flex flex-col items-center w-[150px]">
+                <div className="flex flex-col items-center w-[150px] space-y-2">
                   <p className="label-text">
                     {isToggleChecked ? "Full Discography" : "Top 10 songs"}
                   </p>
@@ -170,13 +195,15 @@ export default function Home({
               </p>
               <div className="grid grid-cols-4 gap-4">
                 {(recomArtists || []).map((el) => (
-                  <div className="flex flex-col items-center">
-                    <img
-                      className="h-[160px] w-[160px] object-cover object-top"
-                      src={el.images.at(-1)["url"]}
-                    />
+                  <div className="flex flex-col items-center" key={el.name}>
+                    <a href={el.href} target="_blank">
+                      <img
+                        className="h-[160px] w-[160px] object-cover object-top"
+                        src={el.images ?? el.image?.at(-1)["#text"]}
+                      />
+                    </a>
                     <p className="mt-2">{el.name}</p>
-                    {/* <p className="text-slate-500">{el.genres[0]}</p> */}
+                    <p className="text-slate-500">{el.genres?.at(0)}</p>
                   </div>
                 ))}
               </div>
