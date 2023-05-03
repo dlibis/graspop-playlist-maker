@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { api_url, lastfm_api } from "@/constants";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
 import axios from "axios";
+import { LoadingImage } from "@/components/LoadingImage";
+import { getValueByKey } from "@/utils/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,9 +19,10 @@ export default function Home({
   playlists_items: { [k: string]: any };
   error: string;
 }) {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, resetField } = useForm();
   const inputRef = useRef<HTMLInputElement>(null);
   const [artist, setArtist] = useState<string>("");
+  const [loadingImage, setLoadingImage] = useState<boolean>(false);
   const [recomArtists, setRecomArtists] = useState<{ [k: string]: any }[]>([]);
   const [debouncedText] = useDebounce(artist, 500);
   const [isToggleChecked, setIsToggleChecked] = useState<boolean>(false);
@@ -42,52 +45,31 @@ export default function Home({
     // function
     async (value) => {
       if (value === "") return;
-      const data = await fetch(
-        `https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=${value}&api_key=${lastfm_api}&format=json&limit=20`
-      );
-      const { similarartists: { artist: similarArtistsArr } = { artist: [] } } =
-        await data.json();
 
-      await Promise.all(
-        similarArtistsArr.map(async (el) => {
-          try {
-            const query = encodeURIComponent(
-              `https://api.spotify.com/v1/search?q=${el.name}&type=artist&market=US&limit=1`
+      try {
+        setLoadingImage(true);
+        const { data: similarArtistsArr } = (await axios.get(
+          `api/artist/${value}`
+        )) as { data: { [k: string]: any }[] };
+        await Promise.all(
+          similarArtistsArr.map(async (el) => {
+            const { data: img } = await axios.get(
+              `/api/artist/lastFm/${el.name}`
             );
-            const url = `${api_url}/proxy/https://www.last.fm/music/${el.name}/+images`;
-            const { data: html } = await axios.get(url, {
-              responseType: "text",
-              headers: { accept: "text/html" },
-            });
-
-            // Step 2: Parse the HTML using a DOM parser
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, "text/html");
-
-            // Step 3: Select the container element that holds the images
-            const img = doc
-              .querySelector(".image-list-item > img")
-              ?.getAttribute("src");
-
-            // Step 5: Store the image URLs or use them as needed
-            el["images"] = img;
-
-            const {
-              data: { artists },
-            } = await axios.get(`${api_url}/data?query=${query}`);
-            const {
-              items: [artistData],
-            } = artists;
-            console.log(artistData);
+            const { data: artistData } = await axios.get(
+              `/api/artist/spotify/${el.name}`
+            );
             el["genres"] = artistData.genres;
-            el["href"] = artistData.external_urls.spotify;
-            // })
-          } catch (e: any) {
-            console.log(e);
-          }
-        })
-      );
-      setRecomArtists(similarArtistsArr);
+            el["href"] = artistData.href;
+            el["images"] = artistData.images;
+            el["image"] = img;
+          })
+        );
+        setRecomArtists(similarArtistsArr);
+        setLoadingImage(false);
+      } catch (e) {
+        console.log(e);
+      }
     },
     // delay in ms
     500
@@ -149,12 +131,57 @@ export default function Home({
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="space-x-4 flex items-center">
                 <p>Add to existing playlist</p>
-                <input
-                  className="input"
-                  {...register("artist")}
-                  placeholder="Type here desired artists to add"
-                  onChange={(e) => debounced(e.target.value)}
-                />
+                <label
+                  htmlFor="default-search"
+                  className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+                >
+                  Search
+                </label>
+                <div className="relative ">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg
+                      aria-hidden="true"
+                      className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        //stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <input
+                    type="search"
+                    id="default-search"
+                    className="input text-sm rounded-lg block w-full pl-10 p-2.5  "
+                    {...register("artist")}
+                    placeholder="Type here desired artists to add"
+                    onChange={(e) => debounced(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                    onClick={() => resetField("artist")}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+                        fill="white"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
                 <select
                   className="select w-full max-w-xs"
                   {...register("playlist")}
@@ -194,16 +221,26 @@ export default function Home({
                 interest you:
               </p>
               <div className="grid grid-cols-4 gap-4">
-                {(recomArtists || []).map((el) => (
-                  <div className="flex flex-col items-center" key={el.name}>
+                {(recomArtists || []).map(({ name, ...el }) => (
+                  <div className="flex flex-col items-center" key={name}>
                     <a href={el.href} target="_blank">
-                      <img
-                        className="h-[160px] w-[160px] object-cover object-top"
-                        src={el.images ?? el.image?.at(-1)["#text"]}
-                      />
+                      {loadingImage ? (
+                        <LoadingImage />
+                      ) : (
+                        <img
+                          className="h-[160px] w-[160px] object-cover object-top"
+                          src={el.image ?? el.images?.at(0)["url"]}
+                        />
+                      )}
                     </a>
-                    <p className="mt-2">{el.name}</p>
-                    <p className="text-slate-500">{el.genres?.at(0)}</p>
+                    <p className="mt-2 mb-1">{name}</p>
+                    <div className="flex space-x-2">
+                      {(el.genres?.slice(0, 2) || []).map((genre: string) => (
+                        <div key={genre} className="badge badge-sm truncate">
+                          {genre}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -218,12 +255,14 @@ export default function Home({
 export async function getStaticProps() {
   try {
     const res = await Promise.all([
-      fetch(`${api_url}/data?query=https://api.spotify.com/v1/me`),
-      fetch(`${api_url}/data?query=https://api.spotify.com/v1/me/playlists`),
+      axios.get(`${api_url}/data?query=https://api.spotify.com/v1/me`),
+      axios.get(
+        `${api_url}/data?query=https://api.spotify.com/v1/me/playlists`
+      ),
     ]);
-    const [user, playlists] = await Promise.all(res.map((r) => r.json()));
-    const { display_name = null } = user;
-    const { items: playlists_items = [] } = playlists;
+    const [user, playlists] = res;
+    const display_name = getValueByKey(["data", "display_name"], user);
+    const playlists_items = getValueByKey(["data", "items"], playlists);
 
     return { props: { display_name, playlists_items } };
   } catch (e: any) {
