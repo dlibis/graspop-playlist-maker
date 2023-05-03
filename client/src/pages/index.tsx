@@ -21,10 +21,8 @@ export default function Home({
 }) {
   const { register, handleSubmit, resetField } = useForm();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [artist, setArtist] = useState<string>("");
   const [loadingImage, setLoadingImage] = useState<boolean>(false);
   const [recomArtists, setRecomArtists] = useState<{ [k: string]: any }[]>([]);
-  const [debouncedText] = useDebounce(artist, 500);
   const [isToggleChecked, setIsToggleChecked] = useState<boolean>(false);
   const onSubmit = async (data) => {
     await fetch(
@@ -45,7 +43,6 @@ export default function Home({
     // function
     async (value) => {
       if (value === "") return;
-
       try {
         setLoadingImage(true);
         const { data: similarArtistsArr } = (await axios.get(
@@ -53,20 +50,20 @@ export default function Home({
         )) as { data: { [k: string]: any }[] };
         await Promise.all(
           similarArtistsArr.map(async (el) => {
-            const { data: img } = await axios.get(
-              `/api/artist/lastFm/${el.name}`
-            );
+            // const { data: img } = await axios.get(
+            //   `/api/artist/lastFm/${el.name}`
+            // );
             const { data: artistData } = await axios.get(
               `/api/artist/spotify/${el.name}`
             );
             el["genres"] = artistData.genres;
             el["href"] = artistData.href;
             el["images"] = artistData.images;
-            el["image"] = img;
+            //el["image"] = img;
           })
         );
-        setRecomArtists(similarArtistsArr);
         setLoadingImage(false);
+        setRecomArtists(similarArtistsArr);
       } catch (e) {
         console.log(e);
       }
@@ -74,12 +71,6 @@ export default function Home({
     // delay in ms
     500
   );
-
-  const fetchArtistId = async () => {
-    const id = await fetch(`${api_url}/data/?query=
-    https://api.spotify.com/v1/search?q=${debouncedText}`);
-    console.log(id);
-  };
 
   return (
     <>
@@ -161,12 +152,17 @@ export default function Home({
                     className="input text-sm rounded-lg block w-full pl-10 p-2.5  "
                     {...register("artist")}
                     placeholder="Type here desired artists to add"
-                    onChange={(e) => debounced(e.target.value)}
+                    onChange={(e) => {
+                      debounced(e.target.value);
+                    }}
                   />
                   <button
                     type="button"
                     className="absolute inset-y-0 right-0 flex items-center pr-3"
-                    onClick={() => resetField("artist")}
+                    onClick={() => {
+                      resetField("artist");
+                      setRecomArtists([]);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -216,10 +212,12 @@ export default function Home({
               </div>
             </form>
             <div className="mt-8 space-y-4">
-              <p>
-                Based on your query, here's a list of artists that might
-                interest you:
-              </p>
+              {recomArtists.length ? (
+                <p>
+                  Based on your query, here's a list of artists that might
+                  interest you:
+                </p>
+              ) : null}
               <div className="grid grid-cols-4 gap-4">
                 {(recomArtists || []).map(({ name, ...el }) => (
                   <div className="flex flex-col items-center" key={name}>
