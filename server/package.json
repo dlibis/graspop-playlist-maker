@@ -19,7 +19,6 @@
     "express": "^4.18.2",
     "jsdom": "^21.1.1",
     "nodemon": "^2.0.22",
-    "pg": "^8.10.0",
     "redis": "^4.6.5",
     "tsc": "^2.0.4"
   },
@@ -30,6 +29,7 @@
     "@types/jsdom": "^21.1.1",
     "@types/node": "^18.15.11",
     "@types/redis": "^4.0.11",
+    "eslint-config-airbnb": "^19.0.4",
     "tsconfig-paths": "^4.2.0",
     "tsconfig.json": "^1.0.11"
   }

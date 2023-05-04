@@ -1,5 +1,7 @@
 {
-    "cSpell.words": [
-        "similarartists"
-    ]
+  "cSpell.words": ["recom", "similarartists"],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.validate": ["javascript", "typescript"],
+  "eslint.packageManager": "yarn"
 }

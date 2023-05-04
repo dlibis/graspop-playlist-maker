@@ -8,11 +8,39 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'hero-pattern':
+          "url('/images/bg.svg'), linear-gradient(black, #181818);",
       },
+      opacity: {
+        'hero-pattern': 0.75,
+      },
+      backgroundColor: 'black',
     },
   },
-  plugins: [require("daisyui")],
-}
+  plugins: [require('daisyui')],
+  daisyui: {
+    themes: [
+      {
+        mytheme: {
+          primary: '#1d4ed8',
+
+          secondary: '#3b82f6',
+
+          accent: '#37CDBE',
+
+          neutral: '#3D4451',
+
+          'base-100': '#3D4451',
+
+          info: '#3ABFF8',
+
+          success: '#10b981',
+
+          warning: '#FBBD23',
+
+          error: '#be123c',
+        },
+      },
+    ],
+  },
+};

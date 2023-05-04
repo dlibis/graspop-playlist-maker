@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express, Request, Response } from 'express';
 import {
   client_url,
   encodedAuth,
@@ -6,23 +6,21 @@ import {
   redirect_uri,
   scope,
   spotify_client_id,
-} from "@/constants";
+} from '@/constants';
 
-import axios from "axios";
-import { createClient } from "redis";
-import { addArtistToPlaylist } from "@/services/addArtistToPlaylist";
-import { searchForArtist } from "@/services/searchForArtist";
-import { getArtistsAlbums } from "@/services/getArtistsAlbums";
-import { refreshToken } from "@/services/refreshToken";
-import { fetchBands } from "@/services/listOfBandsGetter";
-import { getAlbumTracks } from "./services/getAlbumTracks";
-import { addTracksToPlaylist } from "./services/addTracksToPlaylist";
-import cors from "cors";
-import corsAnywhere from "cors-anywhere";
-import { JSDOM } from "jsdom";
-import { axiosRequest } from "@/utils";
-
-import musicBrainzRoute from "@/routes/musicBrainzData";
+import axios from 'axios';
+import { createClient } from 'redis';
+import { addArtistToPlaylist } from '@/services/addArtistToPlaylist';
+import { searchForArtist } from '@/services/searchForArtist';
+import { getArtistsAlbums } from '@/services/getArtistsAlbums';
+import { refreshToken } from '@/services/refreshToken';
+import { fetchBands } from '@/services/listOfBandsGetter';
+import { getAlbumTracks } from './services/getAlbumTracks';
+import { addTracksToPlaylist } from './services/addTracksToPlaylist';
+import cors from 'cors';
+import corsAnywhere from 'cors-anywhere';
+import { JSDOM } from 'jsdom';
+import { axiosRequest } from '@/utils';
 
 const app: Express = express();
 
@@ -31,40 +29,40 @@ client.connect();
 app.use(cors());
 
 const attachAuthorization = async (req, res, next) => {
-  let access_token = await client.get("access_token");
+  let access_token = await client.get('access_token');
   if (!access_token) {
-    const refresh_token = await client.get("refresh_token");
+    const refresh_token = await client.get('refresh_token');
     access_token = await refreshToken(client, refresh_token);
   }
   const url = req.url;
-  if (url === "/secure") {
-    req.authorization = "Bearer <insert token here>";
+  if (url === '/secure') {
+    req.authorization = 'Bearer <insert token here>';
   }
   next();
 };
 
 const headers = {
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
-  "Accept-Language": "en-US,en;q=0.9",
-  accept: "text/html",
+  'User-Agent':
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
+  'Accept-Language': 'en-US,en;q=0.9',
+  accept: 'text/html',
 };
 // proxy server
 let proxy = corsAnywhere.createServer({
   originWhitelist: [], // Allow all origins
   //requireHeaders: [], // Do not require any headers.
   removeHeaders: [], // Do not remove any headers.
-  credentials: "include",
+  credentials: 'include',
   setHeaders: headers, // set the headers in the request
 });
 
 /* Attach our cors proxy to the existing API on the /proxy endpoint. */
-app.get("/proxy/:proxyUrl*", (req, res) => {
-  req.url = req.url.replace("/proxy/", "/"); // Strip '/proxy' from the front of the URL, else the proxy won't work.
-  proxy.emit("request", req, res);
+app.get('/proxy/:proxyUrl*', (req, res) => {
+  req.url = req.url.replace('/proxy/', '/'); // Strip '/proxy' from the front of the URL, else the proxy won't work.
+  proxy.emit('request', req, res);
 });
 
-app.get("/bands", async (req: Request, res: Response) => {
+app.get('/bands', async (req: Request, res: Response) => {
   const bands = await fetchBands();
 
   res.send(JSON.stringify(bands));
@@ -81,24 +79,22 @@ app.get("/bands", async (req: Request, res: Response) => {
 //   );
 // });
 
-app.use("/brainz", musicBrainzRoute);
-
-app.get("/get-bands", async (req, res) => {
+app.get('/get-bands', async (req, res) => {
   try {
-    let access_token = await client.get("access_token");
+    let access_token = await client.get('access_token');
     if (!access_token) {
-      access_token = await axios.get("/auth");
+      access_token = await axios.get('/auth');
     }
     const {
       data: { items },
-    } = await axios.get("https://api.spotify.com/v1/me/playlists", {
+    } = await axios.get('https://api.spotify.com/v1/me/playlists', {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
     });
 
     const { id: graspop_playlist_id } = items.find(
-      (item) => item.name === "test1"
+      (item) => item.name === 'test1',
     );
 
     const bands = await fetchBands();
@@ -111,17 +107,17 @@ app.get("/get-bands", async (req, res) => {
     console.log(err);
   }
 
-  res.send("ok");
+  res.send('ok');
 });
 
 //get data from spotify
 
-app.get("/data", async (req, res) => {
+app.get('/data', async (req, res) => {
   try {
     let query = <string>req.query.query;
-    let access_token = await client.get("access_token");
+    let access_token = await client.get('access_token');
     if (!access_token) {
-      const refresh_token = await client.get("refresh_token");
+      const refresh_token = await client.get('refresh_token');
       access_token = await refreshToken(client, refresh_token);
     }
     const { data } = await axios.get(query, {
@@ -135,20 +131,20 @@ app.get("/data", async (req, res) => {
   }
 });
 
-app.get("/get-artist", async (req, res) => {
+app.get('/get-artist', async (req, res) => {
   const artist = <string>req.query.artist;
   const playlist_id = <string | undefined>req.query.id;
-  const full = <"true" | "false">req.query.full;
-  let access_token = await client.get("access_token");
+  const full = <'true' | 'false'>req.query.full;
+  let access_token = await client.get('access_token');
   if (!access_token) {
-    const refresh_token = await client.get("refresh_token");
+    const refresh_token = await client.get('refresh_token');
     access_token = await refreshToken(client, refresh_token);
   }
   const artist_id = await searchForArtist(artist!, access_token!);
-  if (full === "false") {
+  if (full === 'false') {
     const { tracks: track_data } = await axiosRequest(
-      `https://api.spotify.com/v1/artists/${artist_id}/top-tracks?market=US`,
-      access_token
+      `https://api.spotify.com/v1/artists/${artist_id}/top-tracks?market=IL`,
+      access_token,
     );
     const tracks_uri = track_data.map(({ uri }) => uri);
     await addTracksToPlaylist(tracks_uri, access_token!, playlist_id);
@@ -156,7 +152,7 @@ app.get("/get-artist", async (req, res) => {
     const albums = await getArtistsAlbums(artist_id, access_token);
     for (const [i, album] of albums.entries()) {
       console.log(
-        `adding tracks from ${album.name} index: ${i + 1}/${albums.length}`
+        `adding tracks from ${album.name} index: ${i + 1}/${albums.length}`,
       );
       const { total, limit } = await getAlbumTracks(album.id, access_token);
       // calculate needed iterations
@@ -165,27 +161,27 @@ app.get("/get-artist", async (req, res) => {
         const { items: tracks } = await getAlbumTracks(
           album.id,
           access_token,
-          50 * i
+          50 * i,
         );
         const tracks_uri: string[] = tracks.map(({ uri }) => uri);
         await addTracksToPlaylist(tracks_uri, access_token!, playlist_id);
       }
     }
   }
-  res.send("done");
+  res.send('done');
 });
 
-app.get("/create-playlist", async (req, res) => {
-  console.log("create play");
+app.get('/create-playlist', async (req, res) => {
+  console.log('create play');
   const name = <string>req.query.name;
-  let access_token = await client.get("access_token");
+  let access_token = await client.get('access_token');
   if (!access_token) {
-    const refresh_token = await client.get("refresh_token");
+    const refresh_token = await client.get('refresh_token');
     access_token = await refreshToken(client, refresh_token);
   }
   const {
     data: { id: user_id },
-  } = await axios.get("https://api.spotify.com/v1/me", {
+  } = await axios.get('https://api.spotify.com/v1/me', {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
@@ -197,28 +193,28 @@ app.get("/create-playlist", async (req, res) => {
       headers: {
         Authorization: `Bearer ${access_token}`,
       },
-    }
+    },
   );
-  res.send("playlist created");
+  res.send('playlist created');
 });
 
-app.get("/account", async (req, res) => {
+app.get('/account', async (req, res) => {
   try {
     const {
       data: { access_token, refresh_token },
-    } = await axios.post("https://accounts.spotify.com/api/token", undefined, {
+    } = await axios.post('https://accounts.spotify.com/api/token', undefined, {
       params: {
-        grant_type: "authorization_code",
+        grant_type: 'authorization_code',
         code: req.query.code,
         redirect_uri: redirect_uri,
       },
       headers: {
         Authorization: `Basic ${encodedAuth}`,
-        "Content-Type": "application/x-www-form-urlencoded",
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
-    await client.setEx("access_token", 3600, access_token);
-    await client.setEx("refresh_token", 3600 * 12, refresh_token);
+    await client.setEx('access_token', 3600, access_token);
+    await client.setEx('refresh_token', 3600 * 12, refresh_token);
     res.redirect(`${client_url}`); // Redirect to a success page
   } catch (error) {
     console.error(error);

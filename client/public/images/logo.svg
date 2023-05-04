@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="160" height="120" viewBox="0 0 160 120" xml:space="preserve">
+<desc>Created with Fabric.js 5.2.4</desc>
+<defs>
+</defs>
+<g transform="matrix(1 0 0 1 80 60)" id="9348efaa-cb95-485f-906c-4e7bab28037d"  >
+<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1; visibility: hidden;" vector-effect="non-scaling-stroke"  x="-80" y="-60" rx="0" ry="0" width="160" height="120" />
+</g>
+<g transform="matrix(Infinity NaN NaN Infinity 0 0)" id="7e4cfcb5-84a6-49c6-9677-57881cb05a65"  >
+</g>
+<g transform="matrix(0.92 0 0 0.92 80 43.14)"  >
+<g style="" vector-effect="non-scaling-stroke"   >
+		<g transform="matrix(1 0 0 1 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_3" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_3); stroke-width: 7; stroke-dasharray: 0 531; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.05;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="84.5" />
+</g>
+		<g transform="matrix(0.87 0.5 -0.5 0.87 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_4" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_4); stroke-width: 7; stroke-dasharray: 41 490; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.13;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="78" />
+</g>
+		<g transform="matrix(0.5 0.87 -0.87 0.5 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_5" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_5); stroke-width: 7; stroke-dasharray: 75 449; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.21;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="71.5" />
+</g>
+		<g transform="matrix(0 1 -1 0 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_6" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_6); stroke-width: 7; stroke-dasharray: 102 408; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.29;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="65" />
+</g>
+		<g transform="matrix(-0.5 0.87 -0.87 -0.5 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_7" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_7); stroke-width: 7; stroke-dasharray: 123 368; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.37;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="58.5" />
+</g>
+		<g transform="matrix(-0.87 0.5 -0.5 -0.87 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_8" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_8); stroke-width: 7; stroke-dasharray: 136 327; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.45;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="52" />
+</g>
+		<g transform="matrix(-1 0 0 -1 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_9" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_9); stroke-width: 7; stroke-dasharray: 143 286; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.53;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="45.5" />
+</g>
+		<g transform="matrix(-0.87 -0.5 0.5 -0.87 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_10" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_10); stroke-width: 7; stroke-dasharray: 143 245; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.6;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="39" />
+</g>
+		<g transform="matrix(-0.5 -0.87 0.87 -0.5 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_11" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_11); stroke-width: 7; stroke-dasharray: 136 204; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.68;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="32.5" />
+</g>
+		<g transform="matrix(0 -1 1 0 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_12" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_12); stroke-width: 7; stroke-dasharray: 123 163; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.76;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="26" />
+</g>
+		<g transform="matrix(0.5 -0.87 0.87 0.5 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_13" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_13); stroke-width: 7; stroke-dasharray: 102 123; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.84;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="19.5" />
+</g>
+		<g transform="matrix(0.87 -0.5 0.5 0.87 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_14" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_14); stroke-width: 7; stroke-dasharray: 75 82; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 0.92;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="13" />
+</g>
+		<g transform="matrix(1 0 0 1 0 0)"  >
+<linearGradient id="SVGID_cccoil-grad_15" gradientUnits="objectBoundingBox" gradientTransform="matrix(1 0 0 1 0 0)"  x1="0.5" y1="0" x2="0.5" y2="1">
+<stop offset="0%" style="stop-color:rgb(41,255,191);stop-opacity: 1"/>
+<stop offset="100%" style="stop-color:rgb(48,65,223);stop-opacity: 1"/>
+</linearGradient>
+<circle style="stroke: url(#SVGID_cccoil-grad_15); stroke-width: 7; stroke-dasharray: 41 41; stroke-linecap: round; stroke-dashoffset: 629; stroke-linejoin: miter; stroke-miterlimit: 4; fill: none; fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  cx="0" cy="0" r="6.5" />
+</g>
+</g>
+</g>
+</svg>
