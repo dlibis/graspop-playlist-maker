@@ -2,10 +2,9 @@ import express, { Express, Request, Response } from 'express';
 import {
   client_url,
   encodedAuth,
+  last_fm_api,
   port,
   redirect_uri,
-  scope,
-  spotify_client_id,
 } from '@/constants';
 
 import axios from 'axios';
@@ -19,14 +18,15 @@ import { getAlbumTracks } from './services/getAlbumTracks';
 import { addTracksToPlaylist } from './services/addTracksToPlaylist';
 import cors from 'cors';
 import corsAnywhere from 'cors-anywhere';
-import { JSDOM } from 'jsdom';
-import { axiosRequest } from '@/utils';
+import path from 'path';
+import { axiosRequest, getValueByKey } from '@/utils';
 
 const app: Express = express();
 
 const client = createClient();
 client.connect();
 app.use(cors());
+app.use(express.static(path.join(__dirname, '../../client/build')));
 
 const attachAuthorization = async (req, res, next) => {
   let access_token = await client.get('access_token');
@@ -56,6 +56,11 @@ let proxy = corsAnywhere.createServer({
   setHeaders: headers, // set the headers in the request
 });
 
+const backendInstance = axios.create({
+  baseURL: 'http://localhost:5000',
+  timeout: 1000,
+});
+
 /* Attach our cors proxy to the existing API on the /proxy endpoint. */
 app.get('/proxy/:proxyUrl*', (req, res) => {
   req.url = req.url.replace('/proxy/', '/'); // Strip '/proxy' from the front of the URL, else the proxy won't work.
@@ -67,11 +72,41 @@ app.get('/bands', async (req: Request, res: Response) => {
 
   res.send(JSON.stringify(bands));
 });
-// app.get("/", (req, res) => {
-//   res.send(
-//     `<a href='https://accounts.spotify.com/authorize?client_id=${spotify_client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${scope}'>Sign in</a>`
-//   );
-// });
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../client/build/index.html'));
+});
+
+app.get('/api/artist/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data } = await axios.get(
+      `https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=${id}&api_key=${last_fm_api}&format=json&limit=20`,
+    );
+    const similarArtistsArr = getValueByKey(['similarartists', 'artist'], data);
+    res.status(200).json(similarArtistsArr);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/artist/spotify/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const query = encodeURIComponent(
+      `https://api.spotify.com/v1/search?q=${id}&type=artist&market=US&limit=1`,
+    );
+    const { data } = await backendInstance.get(`/data?query=${query}`);
+    console.log(data);
+    const artistData = getValueByKey(['artists', 'items'], data)[0] || {};
+    res.status(200).json({
+      genres: artistData.genres,
+      href: artistData.external_urls.spotify,
+      images: artistData.images,
+    });
+  } catch (error: any) {
+    res.status(500).json(error.message);
+  }
+});
 
 // app.get("/auth", (req, res) => {
 //   res.redirect(

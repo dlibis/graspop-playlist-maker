@@ -2,7 +2,8 @@
   "name": "graspop-playlist-maker",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ts",
+  "proxy": "http://localhost:5000",
   "scripts": {
     "start": "nodemon --inspect -e ts --exec 'ts-node -r tsconfig-paths/register src/index.ts'",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -13,6 +13,8 @@ const nextConfig = {
 
     return config;
   },
+  distDir: 'build',
+  output: 'export',
 };
 
 module.exports = nextConfig;
