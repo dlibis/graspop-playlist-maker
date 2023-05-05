@@ -3,12 +3,22 @@ import { ChangeEvent } from 'react';
 import { InfoAlert } from '@/components/InfoAlert';
 import { LoadingImage } from '@/components/LoadingImage';
 
-export const ArtistGrid = ({
+type Props = {
+  recomArtists: { [k: string]: any }[];
+  loadingImage: boolean;
+  searchType: 'initial' | 'getData' | 'reset';
+  handleFreezeResults: (e) => void;
+  freezeResults: boolean;
+  handleSelectedArtist: (value: string) => void;
+};
+
+export const ArtistGrid: React.FC<Props> = ({
   recomArtists,
   loadingImage,
   searchType,
   handleFreezeResults,
   freezeResults,
+  handleSelectedArtist,
 }) => {
   return (
     <>
@@ -27,13 +37,7 @@ export const ArtistGrid = ({
                     type="checkbox"
                     className="checkbox"
                     checked={freezeResults}
-                    onClick={(
-                      e: React.MouseEvent<HTMLInputElement, MouseEvent>,
-                    ) =>
-                      handleFreezeResults(
-                        (e.target as HTMLInputElement).checked,
-                      )
-                    }
+                    onChange={handleFreezeResults}
                   />
                 </label>
               </div>
@@ -53,8 +57,16 @@ export const ArtistGrid = ({
                     />
                   )}
                 </a>
-                <p className="mt-2 mb-1">{name}</p>
-                <div className="flex space-x-2">
+                <div className="tooltip" data-tip="Click to add to playlist">
+                  <button
+                    onClick={() => handleSelectedArtist(name)}
+                    className="btn btn-ghost btn-sm my-2"
+                  >
+                    {name}
+                  </button>
+                </div>
+                {/* <p className="mt-2 mb-1">{name}</p> */}
+                <div className="flex space-x-2 flex-wrap lg:space-y-0 space-y-2 justify-center">
                   {(el.genres?.slice(0, 2) || []).map((genre: string) => (
                     <div key={genre} className="badge badge-sm truncate">
                       {genre}
@@ -66,11 +78,13 @@ export const ArtistGrid = ({
           </div>
         </div>
       ) : searchType === 'getData' ? (
-        <InfoAlert
-          text={
-            "The artist you queried is very unique and didn't return any results 😔"
-          }
-        />
+        <div className="container max-w-xl my-8">
+          <InfoAlert
+            text={
+              "The artist you queried is very unique and didn't return any results 😔"
+            }
+          />
+        </div>
       ) : null}
     </>
   );

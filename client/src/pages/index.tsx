@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { MouseEventHandler, useRef, useState } from 'react';
 
 import axios from 'axios';
 import { Inter } from 'next/font/google';
@@ -34,6 +34,7 @@ export default function Home({
   }>({ data: [], searchType: 'initial' });
   const [playlists, setPlaylists] =
     useState<{ [k: string]: any }[]>(playlists_items);
+  const [selectedArtist, setSelectedArtist] = useState<string | null>(null);
 
   const onSubmitCreate = async (e: React.SyntheticEvent) => {
     //  need to put this, or else the page will refresh
@@ -81,7 +82,6 @@ export default function Home({
           }),
         ).then((updatedArray) => {
           setRecomArtists({ data: updatedArray, searchType: 'getData' });
-          setLoadingImage(false);
         });
         setLoadingImage(false);
       } catch (e) {
@@ -96,6 +96,14 @@ export default function Home({
     if (freezeResults) return;
     setRecomArtists({ data: [], searchType: 'reset' });
     setFreezeResults(false);
+  };
+
+  const handleFreezeResults = (
+    e: React.MouseEvent<HTMLInputElement, MouseEvent>,
+  ) => setFreezeResults((e.target as HTMLInputElement).checked);
+
+  const handleSelectedArtist = (value: string) => {
+    setSelectedArtist(value);
   };
 
   return (
@@ -127,15 +135,16 @@ export default function Home({
                   playlists={playlists}
                   debounced={debounced}
                   handleResetQuery={handleResetQuery}
+                  selectedArtist={selectedArtist}
                 />
                 <div className="divider my-1" />
                 <div className="container ">
                   <div
                     tabIndex={0}
-                    className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box "
+                    className="collapse collapse-plus border border-base-300 rounded-box bg-opacity-75 bg-slate-600"
                   >
                     <input type="checkbox" />
-                    <div className="collapse-title text-md font-medium p-[0.5rem] min-h-[2rem]">
+                    <div className="collapse-title text-md font-medium ">
                       Create a new playlist
                     </div>
                     <div className="collapse-content">
@@ -161,8 +170,9 @@ export default function Home({
                   recomArtists={recomArtists.data}
                   loadingImage={loadingImage}
                   searchType={recomArtists.searchType}
-                  handleFreezeResults={setFreezeResults}
-                  freezeResuls={freezeResults}
+                  handleFreezeResults={handleFreezeResults}
+                  freezeResults={freezeResults}
+                  handleSelectedArtist={handleSelectedArtist}
                 />
               </div>
 
@@ -170,9 +180,28 @@ export default function Home({
             </>
           ) : (
             <div className=" container max-w-screen-sm mx-auto text-center">
-              Greetings, fellow user! The utility is ready for your command, but
-              before proceeding, we require the proper credentials, please press
-              the login button
+              <div className="alert shadow-lg">
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="stroke-info flex-shrink-0 w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  <span>
+                    Greetings, fellow user! The utility is ready for your
+                    command, but before proceeding, we require the proper
+                    credentials, please press the login button
+                  </span>
+                </div>
+              </div>
             </div>
           )}
         </div>

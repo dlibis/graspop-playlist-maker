@@ -1,7 +1,8 @@
-import React, { ChangeEvent, SyntheticEvent, useState } from 'react';
+import React, { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
 
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
 import { api_url } from '@/constants';
 
@@ -9,25 +10,44 @@ type Props = {
   handleResetQuery: () => void;
   debounced: (value: string) => void;
   playlists: { [k: string]: any }[];
+  selectedArtist: string | null;
 };
 
 export const ArtistForm: React.FC<Props> = ({
   handleResetQuery,
   debounced,
   playlists,
+  selectedArtist,
 }) => {
   const [isToggleChecked, setIsToggleChecked] = useState<boolean>(false);
   const {
+    setValue,
     register,
     handleSubmit,
     resetField,
     formState: { errors },
   } = useForm<{ artist: string; playlist: string; full: boolean }>();
   const onSubmit = async (data) => {
-    await axios.get(
-      `${api_url}/get-artist?artist=${data.artist}&id=${data.playlist}&full=${data.full}`,
+    await toast.promise(
+      axios.get(
+        `${api_url}/get-artist?artist=${data.artist}&id=${data.playlist}&full=${data.full}`,
+      ),
+      {
+        pending: 'working on it...',
+        success: `${data.artist} added to playlist 🤩`,
+        error: `cant find ${data.artist} 🤔`,
+      },
+      {
+        position: 'top-center',
+        theme: 'dark',
+      },
     );
   };
+  useEffect(() => {
+    if (selectedArtist === null) return;
+    setValue('artist', selectedArtist ?? '');
+    debounced(selectedArtist);
+  }, [selectedArtist]);
 
   const handleSetToggle = (e: ChangeEvent<HTMLInputElement>) =>
     setIsToggleChecked(e.target.checked);
