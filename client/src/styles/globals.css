@@ -6,6 +6,7 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --nav-height: 135px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,15 +17,26 @@
   }
 }
 html {
-  background: linear-gradient(black, #181818);
-}
-body {
-  margin: 0;
-  height: 100vh;
+  background: linear-gradient(#0f172a, #181818);
+  min-height: 100vh;
+  margin: 0 auto;
 }
 
+html,
+body,
+body > div:first-child,
+div#__next,
+div#__next > div {
+  min-height: 100%;
+}
 main {
-  background-image: url('/images/bg.svg');
+  background-image: linear-gradient(
+      to bottom,
+      rgba(15, 23, 42, 0.2),
+      rgba(24, 24, 24, 0.6)
+    ),
+    url('/images/bg.svg');
+  min-height: calc(100vh - var(--nav-height));
 
   background-size: 34% 60%;
   background-repeat: repeat;

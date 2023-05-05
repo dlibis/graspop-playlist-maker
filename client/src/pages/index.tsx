@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 
 import axios from 'axios';
 import { Inter } from 'next/font/google';
+import Head from 'next/head';
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -25,6 +26,7 @@ export default function Home({
   error: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [freezeResults, setFreezeResults] = useState<boolean>(false);
   const [loadingImage, setLoadingImage] = useState<boolean>(false);
   const [recomArtists, setRecomArtists] = useState<{
     data: { [k: string]: any }[];
@@ -60,7 +62,7 @@ export default function Home({
   const debounced = useDebouncedCallback(
     // function
     async (value) => {
-      if (value === '') return;
+      if (value === '' || freezeResults) return;
       try {
         const { data: similarArtistsArr } = (await axios.get(
           `api/artist/${value}`,
@@ -90,12 +92,19 @@ export default function Home({
     500,
   );
 
-  const handleResetQuery = () =>
+  const handleResetQuery = () => {
+    if (freezeResults) return;
     setRecomArtists({ data: [], searchType: 'reset' });
+    setFreezeResults(false);
+  };
 
   return (
     <>
-      <nav className="flex items-center justify-between p-3">
+      <Head>
+        <title>Spotify Mixmaster</title>
+        <meta name="description" content="This is my page description." />
+      </Head>
+      <nav className="flex items-center justify-between p-3 h-[var(--nav-height)]">
         <div className="flex items-center">
           <Logo />
           <div className="text-xl font-bold pb-3">Spotify Mixmaster</div>
@@ -108,52 +117,65 @@ export default function Home({
           </Link>
         </div>
       </nav>
-      <main className="flex flex-col items-center ">
-        {!error ? (
-          <>
-            {/* <main
-            className={`flex min-h-screen flex-col items-center  p-8 ${inter.className}`}
-          > */}
-            <ToastContainer autoClose={2000} />
-            <div className="py-4 bg-black w-full">
-              <form onSubmit={onSubmitCreate}>
-                <div className="space-x-4 flex items-center justify-center">
-                  <input
-                    className="input w-auto"
-                    ref={inputRef}
-                    placeholder="Name of the playlist"
-                  />
-                  <button
-                    type="submit"
-                    className="btn rounded-full bg-primary mx-3"
+      <main>
+        <div className="container ">
+          {!error ? (
+            <>
+              <ToastContainer autoClose={2000} />
+              <div>
+                <ArtistForm
+                  playlists={playlists}
+                  debounced={debounced}
+                  handleResetQuery={handleResetQuery}
+                />
+                <div className="divider my-1" />
+                <div className="container ">
+                  <div
+                    tabIndex={0}
+                    className="collapse collapse-plus border border-base-300 bg-base-100 rounded-box "
                   >
-                    create new playlist
-                  </button>
+                    <input type="checkbox" />
+                    <div className="collapse-title text-md font-medium p-[0.5rem] min-h-[2rem]">
+                      Create a new playlist
+                    </div>
+                    <div className="collapse-content">
+                      <form onSubmit={onSubmitCreate}>
+                        <div className="sm:space-x-4 sm:space-y-0 flex items-center justify-center flex-wrap space-y-4">
+                          <input
+                            className="input input-bordered focus:input-primary my-2"
+                            ref={inputRef}
+                            placeholder="Name of the playlist"
+                          />
+                          <button
+                            type="submit"
+                            className="btn rounded-full bg-primary"
+                          >
+                            create new playlist
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
                 </div>
-              </form>
+                <ArtistGrid
+                  recomArtists={recomArtists.data}
+                  loadingImage={loadingImage}
+                  searchType={recomArtists.searchType}
+                  handleFreezeResults={setFreezeResults}
+                  freezeResuls={freezeResults}
+                />
+              </div>
+
+              {/* </main> */}
+            </>
+          ) : (
+            <div className=" container max-w-screen-sm mx-auto text-center">
+              Greetings, fellow user! The utility is ready for your command, but
+              before proceeding, we require the proper credentials, please press
+              the login button
             </div>
-            <div className="divider" />
-            <div>
-              <ArtistForm
-                playlists={playlists}
-                debounced={debounced}
-                handleResetQuery={handleResetQuery}
-              />
-              <ArtistGrid
-                recomArtists={recomArtists.data}
-                loadingImage={loadingImage}
-                searchType={recomArtists.searchType}
-              />
-            </div>
-            {/* </main> */}
-          </>
-        ) : (
-          <div className=" container max-w-screen-sm mx-auto text-center">
-            Greetings, fellow user! The utility is ready for your command, but
-            before proceeding, we require the proper credentials, please press
-            the login button
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </>
   );

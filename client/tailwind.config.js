@@ -6,18 +6,21 @@ module.exports = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    container: { center: true },
     extend: {
       backgroundImage: {
         'hero-pattern':
           "url('/images/bg.svg'), linear-gradient(black, #181818);",
       },
-      opacity: {
-        'hero-pattern': 0.75,
-      },
-      backgroundColor: 'black',
     },
   },
-  plugins: [require('daisyui')],
+  plugins: [
+    require('daisyui'),
+    function ({ addVariant }) {
+      addVariant('child', '& > *');
+      addVariant('child-hover', '& > *:hover');
+    },
+  ],
   daisyui: {
     themes: [
       {
