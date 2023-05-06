@@ -13,8 +13,9 @@ const nextConfig = {
 
     return config;
   },
-  distDir: 'build',
-  output: 'export',
+  //distDir: 'build',
+  //trailingSlash: true,
+  //output: 'export',
 };
 
 module.exports = nextConfig;

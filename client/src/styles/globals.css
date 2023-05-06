@@ -42,3 +42,7 @@ main {
   background-repeat: repeat;
   /* background: linear-gradient(black, #181818); */
 }
+
+.collapse {
+  visibility: visible !important;
+}

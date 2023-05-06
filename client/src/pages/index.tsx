@@ -5,7 +5,6 @@ import { Inter } from 'next/font/google';
 import Head from 'next/head';
 import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useDebouncedCallback } from 'use-debounce';
 
 import Logo from '../../public/images/logo.svg';
@@ -222,7 +221,7 @@ export async function getStaticProps() {
     const display_name = getValueByKey(['data', 'display_name'], user);
     const playlists_items = getValueByKey(['data', 'items'], playlists);
 
-    return { props: { display_name, playlists_items } };
+    return { props: { display_name, playlists_items }, revalidate: 10 };
   } catch (e: any) {
     console.log(e);
     return { props: { error: e.message } };
