@@ -53,4 +53,4 @@ COPY server/ ./
 EXPOSE 5000
 
 # Start the server
-CMD [ "yarn","start" ]
+CMD [ "yarn","start:prod" ]

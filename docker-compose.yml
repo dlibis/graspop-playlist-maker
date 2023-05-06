@@ -20,4 +20,4 @@ services:
       PORT: 5000
       REDIS_HOST: redis
       REDIS_PORT: 6379
-    command: yarn start
+    command: yarn start:prod
