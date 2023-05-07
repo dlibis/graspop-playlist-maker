@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "next export",
+    "build:prod": "yarn build && yarn export"
   },
   "dependencies": {
     "@svgr/webpack": "^7.0.0",

@@ -13,6 +13,11 @@ const nextConfig = {
 
     return config;
   },
+  exportPathMap: function () {
+    return {
+      '/': { page: '/' },
+    };
+  },
   //distDir: 'build',
   //trailingSlash: true,
   //output: 'export',

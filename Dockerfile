@@ -16,7 +16,7 @@ RUN yarn install --production
 COPY client/ ./
 
 # Build the Next.js application
-RUN yarn build
+RUN yarn build:prod
 
 
 # Server stage
@@ -27,11 +27,15 @@ FROM node:18-alpine
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy production dependencies for the server
-COPY --from=client-builder /app/client/node_modules ./client/node_modules
+RUN mkdir /client && cd /client
 
-# Copy built client files from the client stage
-COPY --from=client-builder /app/client/.next ./client/.next
+# Copy production dependencies for the server
+COPY --from=client-builder app/client .
+
+#need to check why this doesnt work on the first attemp
+RUN yarn build:prod
+
+WORKDIR /app
 
 # Copy the server package.json and lock file
 COPY server/package*.json server/yarn.lock ./server/
@@ -41,14 +45,9 @@ WORKDIR /app/server
 
 RUN yarn install --production
 
-# RUN yarn add nodemon
-
-# RUN yarn add ts-node --dev
-
 # Copy the rest of the server application code
 COPY server/ ./
 
-# WORKDIR /app/server/dist
 # Expose the server port
 EXPOSE 5000
 
