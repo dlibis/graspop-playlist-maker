@@ -20,36 +20,41 @@ RUN yarn build:prod
 
 
 # Server stage
-FROM node:18-alpine
+FROM node:18-alpine as server-builder
 
-#ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
-
-# Set the working directory to /app
-WORKDIR /app
-
-RUN mkdir /client && cd /client
-
-# Copy production dependencies for the server
-COPY --from=client-builder app/client .
-
-#need to check why this doesnt work on the first attemp
-RUN yarn build:prod
 
 WORKDIR /app
 
+COPY --from=client-builder app/client/node_modules ./client/node_modules
 # Copy the server package.json and lock file
 COPY server/package*.json server/yarn.lock ./server/
 
 # Install app dependencies for the server
 WORKDIR /app/server
 
-RUN yarn install --production
+RUN yarn
 
 # Copy the rest of the server application code
 COPY server/ ./
 
+RUN yarn build
+
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy production dependencies for the server
+COPY --from=client-builder app/client ./client
+
+COPY --from=server-builder app/server ./server
+
+COPY --from=server-builder app/server/dist ./server/dist
+
 # Expose the server port
 EXPOSE 5000
+
+WORKDIR /app/server
 
 # Start the server
 CMD [ "yarn","start:prod" ]

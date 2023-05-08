@@ -5,6 +5,7 @@ import {
   last_fm_api,
   port,
   redirect_uri,
+  redis_host,
   redis_port,
   scope,
   spotify_client_id,
@@ -17,17 +18,18 @@ import { searchForArtist } from '@/services/searchForArtist';
 import { getArtistsAlbums } from '@/services/getArtistsAlbums';
 import { refreshToken } from '@/services/refreshToken';
 import { fetchBands } from '@/services/listOfBandsGetter';
-import { getAlbumTracks } from './services/getAlbumTracks';
-import { addTracksToPlaylist } from './services/addTracksToPlaylist';
+import { getAlbumTracks } from '@/services/getAlbumTracks';
+import { addTracksToPlaylist } from '@/services/addTracksToPlaylist';
 import cors from 'cors';
 import corsAnywhere from 'cors-anywhere';
 import path from 'path';
 import { axiosRequest, getValueByKey } from '@/utils';
-import next from '@client/node_modules/next';
+import next from '../../client/node_modules/next';
 
 const dev = process.env.NODE_ENV !== 'production';
+const clientPath = path.dirname(path.dirname(__dirname));
 
-const app = next({ dev, dir: path.join(__dirname, '../../client') });
+const app = next({ dev, dir: path.join(clientPath, 'client') });
 const handle = app.getRequestHandler();
 
 (async () => {
@@ -37,8 +39,8 @@ const handle = app.getRequestHandler();
     const client = createClient({
       legacyMode: true,
       socket: {
-        port: 6379,
-        host: process.env.REDIS_HOST!,
+        port: redis_port,
+        host: redis_host,
       },
     });
     client.connect();
@@ -92,46 +94,45 @@ const handle = app.getRequestHandler();
     //   res.sendFile(path.join(__dirname, '../../client/build/index.html'));
     // });
 
-    server.get('/artist/:id', async (req, res) => {
-      try {
-        const { id } = req.params;
-        const { data } = await axios.get(
-          `https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=${id}&api_key=${last_fm_api}&format=json&limit=20`,
-        );
-        const similarArtistsArr = getValueByKey(
-          ['similarartists', 'artist'],
-          data,
-        );
-        res.status(200).json(similarArtistsArr);
-      } catch (error: any) {
-        res.status(500).json({ error: error.message });
-      }
-    });
+    // server.get('/artist/:id', async (req, res) => {
+    //   try {
+    //     const { id } = req.params;
+    //     const { data } = await axios.get(
+    //       `https://ws.audioscrobbler.com/2.0/?method=artist.getsimilar&artist=${id}&api_key=${last_fm_api}&format=json&limit=20`,
+    //     );
+    //     const similarArtistsArr = getValueByKey(
+    //       ['similarartists', 'artist'],
+    //       data,
+    //     );
+    //     res.status(200).json(similarArtistsArr);
+    //   } catch (error: any) {
+    //     res.status(500).json({ error: error.message });
+    //   }
+    // });
 
-    server.get('/artist/spotify/:id', async (req, res) => {
-      try {
-        const { id } = req.params;
-        const query = encodeURIComponent(
-          `https://api.spotify.com/v1/search?q=${id}&type=artist&market=US&limit=1`,
-        );
-        const { data } = await backendInstance.get(`/data?query=${query}`);
-        console.log(data);
-        const artistData = getValueByKey(['artists', 'items'], data)[0] || {};
-        res.status(200).json({
-          genres: artistData.genres,
-          href: artistData.external_urls.spotify,
-          images: artistData.images,
-        });
-      } catch (error: any) {
-        res.status(500).json(error.message);
-      }
-    });
+    // server.get('/artist/spotify/:id', async (req, res) => {
+    //   try {
+    //     const { id } = req.params;
+    //     const query = encodeURIComponent(
+    //       `https://api.spotify.com/v1/search?q=${id}&type=artist&market=US&limit=1`,
+    //     );
+    //     const { data } = await backendInstance.get(`/data?query=${query}`);
+    //     const artistData = getValueByKey(['artists', 'items'], data)[0] || {};
+    //     res.status(200).json({
+    //       genres: artistData.genres,
+    //       href: artistData.external_urls.spotify,
+    //       images: artistData.images,
+    //     });
+    //   } catch (error: any) {
+    //     res.status(500).json(error.message);
+    //   }
+    // });
 
-    server.get('/auth', (req, res) => {
-      res.redirect(
-        `https://accounts.spotify.com/authorize?client_id=${spotify_client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${scope}`,
-      );
-    });
+    // server.get('/auth', (req, res) => {
+    //   res.redirect(
+    //     `https://accounts.spotify.com/authorize?client_id=${spotify_client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${scope}`,
+    //   );
+    // });
 
     server.get('/get-bands', async (req, res) => {
       try {
@@ -262,7 +263,7 @@ const handle = app.getRequestHandler();
             params: {
               grant_type: 'authorization_code',
               code: req.query.code,
-              redirect_uri: redirect_uri,
+              redirect_uri: `${req.protocol}://${req.headers.host}/account`,
             },
             headers: {
               Authorization: `Basic ${encodedAuth}`,

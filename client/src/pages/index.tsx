@@ -24,6 +24,7 @@ export default function Home({
   playlists_items: { [k: string]: any }[];
   error: string;
 }) {
+  console.log(error);
   const inputRef = useRef<HTMLInputElement>(null);
   const [freezeResults, setFreezeResults] = useState<boolean>(false);
   const [loadingImage, setLoadingImage] = useState<boolean>(false);
