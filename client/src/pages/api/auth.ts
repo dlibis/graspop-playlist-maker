@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { redirect_uri, scope, spotify_client_id } from '@/constants';
+import { scope, spotify_client_id } from '@/constants';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<void>) =>
   res.redirect(
