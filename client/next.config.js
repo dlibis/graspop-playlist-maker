@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  env: {
-    API_URL: process.env.API_URL,
-  },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
@@ -13,14 +10,6 @@ const nextConfig = {
 
     return config;
   },
-  // exportPathMap: function () {
-  //   return {
-  //     '/': { page: '/' },
-  //   };
-  // },
-  //distDir: 'build',
-  //trailingSlash: true,
-  //output: 'export',
 };
 
 module.exports = nextConfig;

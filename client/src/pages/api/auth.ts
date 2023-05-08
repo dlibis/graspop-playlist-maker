@@ -1,10 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-import { scope, spotify_client_id } from '@/constants';
+import { scope, spotifyClientId } from '@/constants';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<void>) =>
+  // eslint-disable-next-line implicit-arrow-linebreak
   res.redirect(
-    `https://accounts.spotify.com/authorize?client_id=${spotify_client_id}&response_type=code&redirect_uri=${
+    `https://accounts.spotify.com/authorize?client_id=${spotifyClientId}&response_type=code&redirect_uri=${
       req.headers['x-forwarded-proto'] || 'http'
     }://${req.headers.host}/account&scope=${scope}`,
   );

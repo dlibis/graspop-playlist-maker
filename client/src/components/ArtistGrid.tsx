@@ -1,5 +1,3 @@
-import { ChangeEvent } from 'react';
-
 import { InfoAlert } from '@/components/InfoAlert';
 import { LoadingImage } from '@/components/LoadingImage';
 
@@ -25,10 +23,7 @@ export const ArtistGrid: React.FC<Props> = ({
       {recomArtists.length > 0 ? (
         <div className="space-y-4 bg-black bg-opacity-30 rounded-t-xl mt-8 p-8">
           <div className="flex justify-between items-center gap-2 flex-wrap">
-            <p>
-              Based on your query, here&apos;s a list of artists that might
-              interest you:
-            </p>
+            <p>Based on your query, here&apos;s a list of artists that might interest you:</p>
             <div>
               <div className="form-control">
                 <label className="label cursor-pointer">
@@ -80,9 +75,7 @@ export const ArtistGrid: React.FC<Props> = ({
       ) : searchType === 'getData' ? (
         <div className="container max-w-xl my-8">
           <InfoAlert
-            text={
-              "The artist you queried is very unique and didn't return any results 😔"
-            }
+            text={"The artist you queried is very unique and didn't return any results 😔"}
           />
         </div>
       ) : null}

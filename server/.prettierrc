@@ -7,6 +7,5 @@
   "trailingComma": "all",
   "importOrder": ["^[a-z]/*", "^@/*"],
   "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true,
-  "bracketSpacing": true
+  "importOrderSortSpecifiers": true
 }

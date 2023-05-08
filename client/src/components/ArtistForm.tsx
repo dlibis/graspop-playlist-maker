@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 
-import { api_url } from '@/constants';
+import { apiUrl } from '@/constants';
 
 type Props = {
   handleResetQuery: () => void;
@@ -29,9 +29,7 @@ export const ArtistForm: React.FC<Props> = ({
   } = useForm<{ artist: string; playlist: string; full: boolean }>();
   const onSubmit = async (data) => {
     await toast.promise(
-      axios.get(
-        `${api_url}/get-artist?artist=${data.artist}&id=${data.playlist}&full=${data.full}`,
-      ),
+      axios.get(`${apiUrl}/get-artist?artist=${data.artist}&id=${data.playlist}&full=${data.full}`),
       {
         pending: 'working on it...',
         success: `${data.artist} added to playlist 🤩`,
@@ -92,9 +90,7 @@ export const ArtistForm: React.FC<Props> = ({
                   debounced(e.target.value);
                 }}
               />
-              {errors.artist && (
-                <p className="text-error">Artist name is needed</p>
-              )}
+              {errors.artist && <p className="text-error">Artist name is needed</p>}
             </div>
             <button
               type="button"
@@ -114,7 +110,7 @@ export const ArtistForm: React.FC<Props> = ({
                 <path
                   d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
                   fill="white"
-                ></path>
+                />
               </svg>
             </button>
           </div>
@@ -134,16 +130,12 @@ export const ArtistForm: React.FC<Props> = ({
               ))}
             </select>
             {errors.playlist && (
-              <p className="text-error absolute left-[49%]">
-                You need to pick a playlist
-              </p>
+              <p className="text-error absolute left-[49%]">You need to pick a playlist</p>
             )}
           </div>
         </div>
         <div className="flex flex-col items-center w-[150px] space-y-2 ">
-          <p className="label-text">
-            {isToggleChecked ? 'Full Discography' : 'Top 10 songs'}
-          </p>
+          <p className="label-text">{isToggleChecked ? 'Full Discography' : 'Top 10 songs'}</p>
           <input
             type="checkbox"
             className="toggle"
@@ -152,10 +144,7 @@ export const ArtistForm: React.FC<Props> = ({
             onChange={handleSetToggle}
           />
         </div>
-        <button
-          className="btn btn-xs sm:btn-sm rounded-full bg-primary "
-          type="submit"
-        >
+        <button className="btn btn-xs sm:btn-sm rounded-full bg-primary " type="submit">
           Add Artist
         </button>
       </div>
