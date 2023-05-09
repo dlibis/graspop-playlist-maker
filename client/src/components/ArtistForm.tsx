@@ -29,7 +29,9 @@ export const ArtistForm: React.FC<Props> = ({
   } = useForm<{ artist: string; playlist: string; full: boolean }>();
   const onSubmit = async (data) => {
     await toast.promise(
-      axios.get(`${apiUrl}/get-artist?artist=${data.artist}&id=${data.playlist}&full=${data.full}`),
+      axios.get(
+        `${apiUrl}/spotify/get-artist?artist=${data.artist}&id=${data.playlist}&full=${data.full}`,
+      ),
       {
         pending: 'working on it...',
         success: `${data.artist} added to playlist 🤩`,

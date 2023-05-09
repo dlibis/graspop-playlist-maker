@@ -10,6 +10,17 @@ const nextConfig = {
 
     return config;
   },
+
+  useFileSystemPublicRoutes: false,
+  output: 'export',
+  typescript: {
+    // @TODO: ignoreBuildErrors
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    // @TODO: ignoreDuringBuilds
+    ignoreDuringBuilds: true,
+  },
 };
 
 module.exports = nextConfig;

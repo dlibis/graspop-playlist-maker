@@ -7,8 +7,6 @@ services:
       - "6379:6379"
   web:
     container_name: web
-    depends_on:
-      - redis
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -18,6 +16,6 @@ services:
       - .:/app
     environment:
       PORT: 5000
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      NODE_ENV: production
+      APP_ENV: production
     command: yarn start:prod

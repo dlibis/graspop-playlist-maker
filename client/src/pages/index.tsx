@@ -9,18 +9,17 @@ import { useDebouncedCallback } from 'use-debounce';
 import Logo from '../../public/images/logo.svg';
 import { ArtistForm } from '@/components/ArtistForm';
 import { ArtistGrid } from '@/components/ArtistGrid';
-import { apiUrl, spotifyClientId } from '@/constants';
+import { apiUrl } from '@/constants';
 import { getValueByKey } from '@/utils/utils';
 
-export default function Home({
-  displayName,
-  playlistsItems,
-  error,
-}: {
+type Props = {
   displayName: string;
   playlistsItems: { [k: string]: any }[];
   error: string;
-}) {
+};
+
+const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
+  console.log(apiUrl);
   const inputRef = useRef<HTMLInputElement>(null);
   const [freezeResults, setFreezeResults] = useState<boolean>(false);
   const [loadingImage, setLoadingImage] = useState<boolean>(false);
@@ -61,7 +60,7 @@ export default function Home({
     async (value) => {
       if (value === '' || freezeResults) return;
       try {
-        const { data: similarArtistsArr } = (await axios.get(`api/artist/${value}`)) as {
+        const { data: similarArtistsArr } = (await axios.get(`/artist/${value}`)) as {
           data: { [k: string]: any }[];
         };
         setLoadingImage(true);
@@ -69,7 +68,7 @@ export default function Home({
           similarArtistsArr.map(({ image, ...el }) => {
             const obj: { [k: string]: any } = {};
             /* eslint-disable-line */
-            return axios.get(`/api/artist/spotify/${el.name}`).then(({ data: artistData }) => {
+            return axios.get(`/artist/spotify/${el.name}`).then(({ data: artistData }) => {
               obj.genres = artistData.genres;
               obj.href = artistData.href;
               obj.images = artistData.images;
@@ -119,6 +118,17 @@ export default function Home({
               <p>{displayName ? `Hello ${displayName}` : 'Please login'}</p>
             </button>
           </Link>
+          <button
+            onClick={() => {
+              axios
+                .get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me`)
+                .then(({ res }) => console.log(res));
+            }}
+            type="button"
+            className="rounded-full bg-success text-white p-2"
+          >
+            <p>test</p>
+          </button>
         </div>
       </nav>
       <main>
@@ -199,21 +209,22 @@ export default function Home({
       </main>
     </>
   );
-}
+};
 
 export async function getStaticProps() {
   try {
     const res = await Promise.all([
-      axios.get(`${apiUrl}/data?query=https://api.spotify.com/v1/me`),
-      axios.get(`${apiUrl}/data?query=https://api.spotify.com/v1/me/playlists`),
+      axios.get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me`),
+      axios.get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me/playlists`),
     ]);
     const [user, playlists] = res;
     const displayName = getValueByKey(['data', 'display_name'], user);
     const playlistsItems = getValueByKey(['data', 'items'], playlists);
 
-    return { props: { displayName, playlistsItems }, revalidate: 10 };
+    return { props: { displayName, playlistsItems } };
   } catch (e: any) {
-    console.error(e);
+    console.error(e.message);
     return { props: { error: e.message } };
   }
 }
+export default Home;

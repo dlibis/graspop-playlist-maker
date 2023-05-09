@@ -1,15 +1,11 @@
-import axios from "axios";
+import axiosReq from '@/utils/axiosReq';
+import axios from 'axios';
 
-export const getArtistsAlbums = async (artist_id, access_token) => {
+export const getArtistsAlbums = async (artist_id) => {
   const {
     data: { items },
-  } = await axios.get(
+  } = await axiosReq.get(
     `https://api.spotify.com/v1/artists/${artist_id}/albums?include_groups=album&market=IL&limit=50`,
-    {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    }
   );
   return items;
 };

@@ -11,6 +11,7 @@
   },
   "plugins": ["prettier"],
   "rules": {
+    "react/prop-types": 0,
     "prettier/prettier": "error",
     "no-unused-vars": "warn",
     "no-console": ["warn", { "allow": ["error"] }],
@@ -31,12 +32,5 @@
         "unnamedComponents": "arrow-function"
       }
     ]
-  // "settings": {
-  //   "import/resolver": {
-  //     "alias": {
-  //       "map": [["@", "./src/"]],
-  //       "extensions": [".ts", ".js", ".tsx"]
-  //     }
-  //   }
-  // }
+  }
 }

@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { encodeBase64 } from './utils';
+import { encodeBase64 } from './utils/utils';
 
 if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.production' });
@@ -7,6 +7,7 @@ if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.development' });
 }
 
+export const isDev = process.env.NODE_ENV !== 'production';
 export const port = process.env.PORT!;
 export const graspopLineup = process.env.GRASPOP_LINEUP!;
 export const scope = process.env.SCOPE!;
