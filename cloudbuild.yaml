@@ -4,8 +4,8 @@ steps:
     args: ["clone", "$_REPO"]
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "gcr.io/$PROJECT_ID/$_APP_NAME:latest", "."]
-  - name: "gcr.io/cloud-builders/docker-compose"
-    args: ["up", "-d"]
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["compose", "up", "-d"]
   - name: gcr.io/cloud-builders/docker
     args:
       - push
