@@ -114,21 +114,15 @@ const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
         </div>
         <div>
           <Link href="/api/auth">
-            <button type="button" className="rounded-full bg-success text-white p-2">
-              <p>{displayName ? `Hello ${displayName}` : 'Please login'}</p>
+            <button
+              type="button"
+              className="rounded-full btn btn-sm md:btn-md bg-success text-white p-2 h-full"
+            >
+              <p className="text-xs md:text-base">
+                {displayName ? `Hello ${displayName}` : 'Please login'}
+              </p>
             </button>
           </Link>
-          <button
-            onClick={() => {
-              axios
-                .get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me`)
-                .then(({ res }) => console.log(res));
-            }}
-            type="button"
-            className="rounded-full bg-success text-white p-2"
-          >
-            <p>test</p>
-          </button>
         </div>
       </nav>
       <main>
