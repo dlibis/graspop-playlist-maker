@@ -1,7 +1,7 @@
 steps:
   # Step 1: Clone the repository
   - name: 'gcr.io/cloud-builders/git'
-    args: ['clone', '$REPO']
+    args: ['clone', '$_REPO']
 
   # Step 2: Build the Docker image using docker-compose
   - name: 'docker/compose'
@@ -10,7 +10,7 @@ steps:
 
   # Step 3: Push the Docker image to Google Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/gcr.io/$PROJECT_ID/$_APP_NAME:latest']
+    args: ['push', 'gcr.io/gcr.io/$_PROJECT_ID/$_APP_NAME:latest']
 
   # Step 4: Deploy the Docker image to Google Cloud Run
   - name: 'gcr.io/cloud-builders/gcloud'
@@ -18,35 +18,10 @@ steps:
       - 'run'
       - 'deploy'
       - 'docker-mixmaster'
-      - '--image=gcr.io/gcr.io/$PROJECT_ID/$_APP_NAME:latest'
+      - '--image=gcr.io/gcr.io/$_PROJECT_ID/$_APP_NAME:latest'
       - '--region=europe-west1'
       - '--port=8080'
   substitutions:
-    REPO: 'https://github.com/dlibis/graspop-playlist-maker.git'
+    _REPO: 'https://github.com/dlibis/graspop-playlist-maker.git'
     _APP_NAME: "docker-mixmaster"
-    PROJECT_ID: "profound-outlet-383008"
-
-
-
-# steps:
-#   - name: "gcr.io/cloud-builders/docker"
-#     entrypoint: "bash"
-#     args:
-#       - "-c"
-#       - "docker pull gcr.io/$PROJECT_ID/$_APP_NAME:latest || exit 0"
-#   - name: gcr.io/cloud-builders/docker
-#     args:
-#       - "build"
-#       - "-t"
-#       - "gcr.io/$PROJECT_ID/$_APP_NAME:latest"
-#       - "."
-#   - name: gcr.io/cloud-builders/docker
-#     args:
-#       - "push"
-#       - "gcr.io/$PROJECT_ID/$_APP_NAME:latest"
-# images:
-#   - "gcr.io/$PROJECT_ID/$_APP_NAME"
-# timeout: 1200s
-# substitutions:
-#   _APP_NAME: "docker-mixmaster"
-#   PROJECT_ID: "profound-outlet-383008"
+    _PROJECT_ID: "profound-outlet-383008"
