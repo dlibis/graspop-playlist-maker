@@ -2,10 +2,12 @@ import dotenv from 'dotenv';
 import { encodeBase64 } from './utils/utils';
 
 if (process.env.NODE_ENV === 'production') {
-  dotenv.config({ path: '.env.production' });
+  dotenv.config({ path: __dirname + '.env.production' });
 } else {
-  dotenv.config({ path: '.env.development' });
+  dotenv.config({ path: __dirname + '.env.development' });
 }
+
+console.log({ env: process.env.NODE_ENV });
 
 export const isDev = process.env.NODE_ENV !== 'production';
 export const port = process.env.PORT!;

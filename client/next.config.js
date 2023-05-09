@@ -12,7 +12,7 @@ const nextConfig = {
   },
 
   useFileSystemPublicRoutes: false,
-  output: 'export',
+  //output: 'export',
   typescript: {
     // @TODO: ignoreBuildErrors
     ignoreBuildErrors: true,

@@ -8,25 +8,23 @@ import spotify from '@/routes/api/spotify';
 import artistRoutes from '@/routes/api/artist';
 
 import next from '../../client/node_modules/next';
-
-import { loadEnvConfig } from '../../client/node_modules/@next/env';
 import redisClient from '@/utils/redis';
-// loadEnvConfig('../../client', isDev);
+
 console.log(isDev);
 
 const clientPath = path.dirname(path.dirname(__dirname));
 
 const app = next({
-  dev: true,
+  dev: isDev,
   dir: path.join(clientPath, 'client'),
   isNextDevCommand: false,
 });
 const handle = app.getRequestHandler();
+const server = express();
 
 app
   .prepare()
   .then(() => {
-    const server = express();
     server.use(cors());
     server.get('/', (req, res) => {
       return app.render(req, res, '/');

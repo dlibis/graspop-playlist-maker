@@ -6,7 +6,7 @@
   "proxy": "http://localhost:5000",
   "scripts": {
     "dev": "nodemon dist/index.js",
-    "start:prod": "NODE_ENV=production && APP_ENV=production && nodemon dist/index.js",
+    "start:prod": "cross-env NODE_ENV=production && cross-env APP_ENV=production && nodemon dist/index.js",
     "start": "nodemon --inspect -e ts --exec 'ts-node -r tsconfig-paths/register src/index.ts'",
     "build": "tsc && tsc-alias"
   },
@@ -33,6 +33,7 @@
     "@types/node": "^20.1.0",
     "@types/redis": "^4.0.11",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.0.1",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-standard-with-typescript": "^34.0.1",
