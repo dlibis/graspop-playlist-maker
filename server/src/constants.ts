@@ -16,8 +16,8 @@ export const scope = process.env.SCOPE!;
 export const redirect_uri = process.env.REDIRECT_URI!;
 export const spotify_client_id = process.env.SPOTIFY_CLIENT_ID!;
 export const spotify_client_secret = process.env.SPOTIFY_CLIENT_SECRET!;
-export const redis_port = +process.env.REDIS_PORT! || 6379;
-export const redis_host = process.env.REDIS_HOST!;
+export const redis_port = +process.env.REDISPORT! || 6379;
+export const redis_host = process.env.REDISHOST! || '127.0.0.1';
 export const encodedAuth = encodeBase64(
   spotify_client_id,
   spotify_client_secret,
