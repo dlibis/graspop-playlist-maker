@@ -8,10 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "export": "next export",
-    "build:prod": "react-env --env APP_ENV && yarn build && yarn export"
+    "build:prod": "yarn build && yarn export"
   },
   "dependencies": {
-    "@beam-australia/react-env": "^3.1.1",
     "@svgr/webpack": "^7.0.0",
     "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "@types/axios": "^0.14.0",

@@ -6,7 +6,7 @@
   "proxy": "http://localhost:5000",
   "scripts": {
     "dev": "nodemon dist/index.js",
-    "start:prod": "cross-env NODE_ENV=production && cross-env APP_ENV=production && nodemon dist/index.js",
+    "start:prod": "cross-env NODE_ENV=production  cross-env APP_ENV=production  nodemon dist/index.js",
     "start": "nodemon --inspect -e ts --exec 'ts-node -r tsconfig-paths/register src/index.ts'",
     "build": "tsc && tsc-alias"
   },
