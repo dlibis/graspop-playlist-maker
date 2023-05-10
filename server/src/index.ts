@@ -1,5 +1,5 @@
 import express from 'express';
-import { isDev, port } from '@/constants';
+import { isDev, port, redis_host, redis_port } from '@/constants';
 
 import cors from 'cors';
 import path from 'path';
@@ -9,8 +9,6 @@ import artistRoutes from '@/routes/api/artist';
 
 import next from '../../client/node_modules/next';
 import redisClient from '@/utils/redis';
-
-console.log(isDev);
 
 const clientPath = path.dirname(path.dirname(__dirname));
 
@@ -40,7 +38,7 @@ app
     redisClient.connect().then(() => {
       server.listen(port, () => {
         console.log(
-          `⚡ [server]: Server is running at http://localhost:${port}`,
+          `⚡ [server]: Server is running at http://localhost:${port} in ${process.env.NODE_ENV}`,
         );
       });
     });
