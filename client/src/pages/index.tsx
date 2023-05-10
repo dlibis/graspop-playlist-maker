@@ -15,7 +15,7 @@ import { getValueByKey } from '@/utils/utils';
 type Props = {
   displayName: string;
   playlistsItems: { [k: string]: any }[];
-  error: string;
+  error: any;
 };
 
 const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
@@ -196,6 +196,9 @@ const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
                     proceeding, we require the proper credentials, please press the login button
                   </span>
                 </div>
+                <div>{error.code}</div>
+                <div>{error}</div>
+                <div>{apiUrl}</div>
               </div>
             </div>
           )}
@@ -218,7 +221,7 @@ export async function getStaticProps() {
     return { props: { displayName, playlistsItems } };
   } catch (e: any) {
     console.error(e.message);
-    return { props: { error: e.message } };
+    return { props: { error: JSON.stringify(e) } };
   }
 }
 export default Home;
