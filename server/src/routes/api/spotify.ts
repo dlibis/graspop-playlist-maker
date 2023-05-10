@@ -1,4 +1,4 @@
-import { encodedAuth } from '@/constants';
+import { encodedAuth, redirect_uri } from '@/constants';
 import { addTracksToPlaylist } from '@/services/addTracksToPlaylist';
 import { getAlbumTracks } from '@/services/getAlbumTracks';
 import { getArtistsAlbums } from '@/services/getArtistsAlbums';
@@ -41,7 +41,7 @@ router.get('/account', async (req, res) => {
       params: {
         grant_type: 'authorization_code',
         code: req.query.code,
-        redirect_uri: `${req.protocol}://${req.headers.host}/spotify/account`,
+        redirect_uri: `${redirect_uri}`,
       },
       headers: {
         Authorization: `Basic ${encodedAuth}`,
