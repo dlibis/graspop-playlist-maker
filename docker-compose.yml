@@ -5,6 +5,8 @@ services:
     image: "redis:alpine"
     ports:
       - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
   web:
     container_name: web
     depends_on:
