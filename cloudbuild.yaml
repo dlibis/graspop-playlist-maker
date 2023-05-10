@@ -15,7 +15,7 @@ steps:
       - run
       - deploy
       - $_APP_NAME
-      - --image=$_REGION/$PROJECT_ID/$_APP_NAME:latest"
+      - --image=$_REGION/$PROJECT_ID/$_APP_NAME:latest
       - --region=europe-west1
       - --port=5000
       # - --set-env-vars=
