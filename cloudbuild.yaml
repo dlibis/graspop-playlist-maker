@@ -1,22 +1,36 @@
----
 steps:
-  - name: gcr.io/cloud-builders/git
-    args: ["clone", "$_REPO"]
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/$_PROJECT_ID/$_APP_NAME:latest", "."]
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/$_PROJECT_ID/$_APP_NAME:latest"]
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - $_REGION/$PROJECT_ID/$_APP_NAME/$_APP_NAME-image
+      - .
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - $_REGION/$PROJECT_ID/$_APP_NAME/$_APP_NAME-image
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
-    entrypoint: "gcloud"
+    entrypoint: gcloud
     args:
       - run
       - deploy
       - $_APP_NAME
-      - --image=gcr.io/$_PROJECT_ID/$_APP_NAME:latest
+      - " --image=$_REGION/$PROJECT_ID/$_APP_NAME:latest"
       - --region=europe-west1
       - --port=5000
-      - --set-env-vars REDISHOST=10.142.172.163,REDISPORT=6379
+      - --set-env-vars
+      # - REDISHOST=$REDISHOST,
+      # - REDISPORT=$REDISPORT,
+      # - SPOTIFY_CLIENT_ID=$SPOTIFYCLIENTID,
+      # - SPOTIFY_CLIENT_SECRET=$SPOTIFYCLIENTSECRET,
+      # - SCOPE=$SCOPE,
+      # - LAST_FM_API=$LASTFMAPI,
+      # - REDIRECT_URI=$REDIRECTURI,
+      - NODE_ENV=production,
+      - NEXT_PUBLIC_API_URL=/
 substitutions:
   _REPO: https://github.com/dlibis/graspop-playlist-maker.git
   _APP_NAME: mixmaster-docker
-  _PROJECT_ID: profound-outlet-383008
+  _REGION: gcr.io
+  # _REDISHOST: $REDISHOST
+  # _REDISPORT: $REDISPORT
