@@ -6,7 +6,8 @@ steps:
     args: ["build", "-t", "gcr.io/$_PROJECT_ID/$_APP_NAME:latest", "."]
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$_PROJECT_ID/$_APP_NAME:latest"]
-  - name: gcr.io/cloud-builders/gcloud
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:alpine
+    entrypoint: "gcloud"
     args:
       - run
       - deploy
@@ -14,6 +15,7 @@ steps:
       - --image=gcr.io/$_PROJECT_ID/$_APP_NAME:latest
       - --region=europe-west1
       - --port=5000
+      - --set-env-vars REDISHOST=10.142.172.163,REDISPORT=6379
 substitutions:
   _REPO: https://github.com/dlibis/graspop-playlist-maker.git
   _APP_NAME: mixmaster-docker

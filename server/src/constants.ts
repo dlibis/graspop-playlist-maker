@@ -7,7 +7,11 @@ if (process.env.NODE_ENV === 'production') {
   dotenv.config({ path: '.env.development' });
 }
 
-console.log({ env: process.env.NODE_ENV });
+console.log({
+  env: process.env.NODE_ENV,
+  rport: process.env.REDISPORT,
+  host: process.env.REDISHOST,
+});
 
 export const isDev = process.env.NODE_ENV !== 'production';
 export const port = process.env.PORT! || 5000;
