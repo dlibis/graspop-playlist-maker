@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
@@ -44,6 +44,7 @@ export const ArtistForm: React.FC<Props> = ({
       },
     );
   };
+
   useEffect(() => {
     if (selectedArtist === null) return;
     setValue('artist', selectedArtist ?? '');
@@ -126,7 +127,7 @@ export const ArtistForm: React.FC<Props> = ({
               <option value="" disabled>
                 Select your Playlist
               </option>
-              {(playlists || []).map(({ name, id }) => (
+              {playlists.map(({ name, id }) => (
                 <option key={id} value={id}>
                   {name}
                 </option>

@@ -38,9 +38,15 @@ const Home: React.FC = () => {
 
   // eslint-disable-next-line prettier/prettier
   // @ts-ignore
-  const { displayName, playlistItems, error, loading, responseStatus } = useGetSpotifyData();
-  // eslint-disable-next-line prettier/prettier
-  const [playlists, setPlaylists] = useState<Record<string, any>[]>(playlistItems);
+  const {
+    displayName,
+    playlistsItems: playlists,
+    error,
+    loading,
+    responseStatus,
+    handleUpdatePlaylist,
+  } = useGetSpotifyData();
+
   const [selectedArtist, setSelectedArtist] = useState<string | null>(null);
 
   const onSubmitCreate = async (e: React.SyntheticEvent) => {
@@ -63,7 +69,7 @@ const Home: React.FC = () => {
       const { data } = await axios.get(
         `${apiUrl}/data?query=https://api.spotify.com/v1/me/playlists`,
       );
-      setPlaylists(data.items);
+      handleUpdatePlaylist(data.items);
     }
   };
 
@@ -135,7 +141,7 @@ const Home: React.FC = () => {
         </div>
         <div>
           {displayName ? (
-            <div className="dropdown">
+            <div className="dropdown dropdown-end">
               <label tabIndex={0} className="btn bg-success text-white m-1">
                 Hello {displayName}
               </label>

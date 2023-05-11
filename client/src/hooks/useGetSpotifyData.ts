@@ -12,6 +12,10 @@ const useGetSpotifyData = () => {
   const [responseStatus, setResponseStatus] = useState<number>(null);
   const [error, setError] = useState('');
 
+  const handleUpdatePlaylist = (data) => {
+    setPlaylistsItems(data);
+  };
+
   const fetchData = async () => {
     try {
       const res = await Promise.all([
@@ -30,9 +34,11 @@ const useGetSpotifyData = () => {
     }
   };
   useEffect(() => {
-    SetLoading(true);
-    fetchData();
-    SetLoading(false);
+    (async () => {
+      SetLoading(true);
+      await fetchData();
+      SetLoading(false);
+    })();
   }, []);
 
   return {
@@ -41,6 +47,7 @@ const useGetSpotifyData = () => {
     error,
     loading,
     responseStatus,
+    handleUpdatePlaylist,
   };
 };
 
