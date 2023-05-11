@@ -4,7 +4,6 @@ import { checkToken } from '@/middlewares/checkToken';
 
 const axiosReq = () => {
   const defaultOptions = {
-    //baseURL: 'http://localhost:5000',
     method: 'get',
     headers: {
       'Content-Type': 'application/json',
@@ -15,16 +14,12 @@ const axiosReq = () => {
   let instance = axios.create(defaultOptions);
 
   // Set the AUTH token for any request
-  instance.interceptors.request.use(async (config) => {
+  instance.interceptors.request.use(async (req) => {
     const token = await checkToken();
-    config.headers.Authorization = token ? `Bearer ${token}` : '';
-    config.headers.test = 'I am only a header!';
-    return config;
+    req.headers.Authorization = token ? `Bearer ${token}` : '';
+    console.log('Request:', JSON.stringify(req.headers, null, 2));
+    return req;
   });
-  //   instance.interceptors.request.use((request) => {
-  //     console.log('Request:', JSON.stringify(request.headers, null, 2));
-  //     return request;
-  //   });
 
   return instance;
 };
