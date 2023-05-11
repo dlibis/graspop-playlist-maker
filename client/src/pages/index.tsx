@@ -1,3 +1,12 @@
+/* eslint-disable no-nested-ternary */
+
+/* eslint-disable jsx-a11y/label-has-associated-control */
+
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+
+/* eslint-disable react/jsx-one-expression-per-line */
+
+/* eslint-disable object-curly-newline */
 import { useRef, useState } from 'react';
 
 import axios from 'axios';
@@ -10,16 +19,15 @@ import Logo from '../../public/images/logo.svg';
 import { ArtistForm } from '@/components/ArtistForm';
 import { ArtistGrid } from '@/components/ArtistGrid';
 import { apiUrl } from '@/constants';
-import { getValueByKey } from '@/utils/utils';
+import useGetSpotifyData from '@/hooks/useGetSpotifyData';
 
-type Props = {
-  displayName: string;
-  playlistsItems: { [k: string]: any }[];
-  error: any;
-};
+// type Props = {
+//   displayName: string;
+//   playlistsItems: { [k: string]: any }[];
+//   error: any;
+// };
 
-const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
-  console.log(apiUrl);
+const Home: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [freezeResults, setFreezeResults] = useState<boolean>(false);
   const [loadingImage, setLoadingImage] = useState<boolean>(false);
@@ -27,8 +35,12 @@ const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
     data: { [k: string]: any }[];
     searchType: 'initial' | 'getData' | 'reset';
   }>({ data: [], searchType: 'initial' });
+
   // eslint-disable-next-line prettier/prettier
-  const [playlists, setPlaylists] = useState<Record<string, any>[]>(playlistsItems);
+  // @ts-ignore
+  const { displayName, playlistItems, error, loading, responseStatus } = useGetSpotifyData();
+  // eslint-disable-next-line prettier/prettier
+  const [playlists, setPlaylists] = useState<Record<string, any>[]>(playlistItems);
   const [selectedArtist, setSelectedArtist] = useState<string | null>(null);
 
   const onSubmitCreate = async (e: React.SyntheticEvent) => {
@@ -101,6 +113,15 @@ const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
     setSelectedArtist(value);
   };
 
+  const handleLogOut = async () => {
+    try {
+      await axios.get(`${apiUrl}/api/logout`);
+      window.location.reload(false);
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       <Head>
@@ -113,16 +134,36 @@ const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
           <div className="text-xl font-bold pb-3">Spotify Mixmaster</div>
         </div>
         <div>
-          <Link href="/api/auth">
-            <button
-              type="button"
-              className="rounded-full btn btn-sm md:btn-md bg-success text-white p-2 h-full"
-            >
-              <p className="text-xs md:text-base">
-                {displayName ? `Hello ${displayName}` : 'Please login'}
-              </p>
-            </button>
-          </Link>
+          {displayName ? (
+            <div className="dropdown">
+              <label tabIndex={0} className="btn bg-success text-white m-1">
+                Hello {displayName}
+              </label>
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu p-2 shadow bg-gray-900 rounded-box w-52"
+              >
+                <li>
+                  <button
+                    className="btn btn-link no-underline"
+                    type="button"
+                    onClick={handleLogOut}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <Link href="/api/auth">
+              <button
+                type="button"
+                className="rounded-full btn btn-sm md:btn-md bg-success text-white p-2 h-full"
+              >
+                <p className="text-xs md:text-base">Please login</p>
+              </button>
+            </Link>
+          )}
         </div>
       </nav>
       <main>
@@ -174,7 +215,7 @@ const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
 
               {/* </main> */}
             </>
-          ) : (
+          ) : responseStatus === 403 ? (
             <div className=" container max-w-screen-sm mx-auto text-center">
               <div className="alert shadow-lg">
                 <div>
@@ -196,11 +237,11 @@ const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
                     proceeding, we require the proper credentials, please press the login button
                   </span>
                 </div>
-                <div>{error.code}</div>
-                <div>{error}</div>
-                <div>{apiUrl}</div>
+                <div className="text-transparent">{responseStatus}</div>
               </div>
             </div>
+          ) : (
+            <div>{error}</div>
           )}
         </div>
       </main>
@@ -208,20 +249,20 @@ const Home: React.FC<Props> = ({ displayName, playlistsItems, error }) => {
   );
 };
 
-export async function getStaticProps() {
-  try {
-    const res = await Promise.all([
-      axios.get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me`),
-      axios.get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me/playlists`),
-    ]);
-    const [user, playlists] = res;
-    const displayName = getValueByKey(['data', 'display_name'], user);
-    const playlistsItems = getValueByKey(['data', 'items'], playlists);
+// export async function getStaticProps() {
+//   try {
+//     const res = await Promise.all([
+//       axios.get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me`),
+//       axios.get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me/playlists`),
+//     ]);
+//     const [user, playlists] = res;
+//     const displayName = getValueByKey(['data', 'display_name'], user);
+//     const playlistsItems = getValueByKey(['data', 'items'], playlists);
 
-    return { props: { displayName, playlistsItems } };
-  } catch (e: any) {
-    console.error(e.message);
-    return { props: { error: JSON.stringify(e) } };
-  }
-}
+//     return { props: { displayName, playlistsItems } };
+//   } catch (e: any) {
+//     console.error(e.message);
+//     return { props: { error: JSON.stringify(e) } };
+//   }
+// }
 export default Home;

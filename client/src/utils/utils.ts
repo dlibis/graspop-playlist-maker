@@ -1,7 +1,4 @@
-export const getValueByKey = (
-  pathArray: string[],
-  obj: { [k: string]: any },
-) => {
+export const getValueByKey = (pathArray: string[], obj: { [k: string]: any }): any => {
   if (!Array.isArray(pathArray) || pathArray.length === 0) {
     throw new Error('Invalid path argument');
   }
