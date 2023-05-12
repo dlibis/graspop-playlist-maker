@@ -38,7 +38,7 @@ export const ArtistGrid: React.FC<Props> = ({
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {recomArtists.map(({ name, ...el }) => (
               <div className="flex flex-col items-center" key={name}>
                 <a href={el.href} target="_blank">

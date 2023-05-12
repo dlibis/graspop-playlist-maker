@@ -83,7 +83,7 @@ export const ArtistForm: React.FC<Props> = ({
                 />
               </svg>
             </div>
-            <div className="flex-0">
+            <div>
               <input
                 type="search"
                 id="default-search"
@@ -120,7 +120,7 @@ export const ArtistForm: React.FC<Props> = ({
           </div>
           <div>
             <select
-              className="select flex-0 focus:input-primary "
+              className="select focus:input-primary  w-[200px] md:w-full"
               {...register('playlist', { required: true })}
               defaultValue=""
             >
