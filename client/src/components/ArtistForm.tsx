@@ -83,11 +83,11 @@ export const ArtistForm: React.FC<Props> = ({
                 />
               </svg>
             </div>
-            <div>
+            <div className="flex-0">
               <input
                 type="search"
                 id="default-search"
-                className="input bg-neutral text-sm rounded-lg block w-full pl-10 p-2.5  flex-1 focus:input-primary "
+                className="input bg-neutral text-sm rounded-lg block w-full pl-10 p-2.5  focus:input-primary "
                 {...register('artist', { required: true })}
                 placeholder="Type here desired artists to add"
                 onChange={(e) => {
@@ -120,7 +120,7 @@ export const ArtistForm: React.FC<Props> = ({
           </div>
           <div>
             <select
-              className="select flex-1 focus:input-primary "
+              className="select flex-0 focus:input-primary "
               {...register('playlist', { required: true })}
               defaultValue=""
             >

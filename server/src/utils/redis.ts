@@ -10,7 +10,10 @@ const redisClient = createClient({
 });
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
 redisClient.on('connect', () =>
-  console.log('Successful to connect with redis'),
+  console.log(
+    '%c Successful to connect with redis',
+    'color:red; font-size:30px; font-weight: bold; -webkit-text-stroke: 1px black;',
+  ),
 );
 
 export default redisClient;

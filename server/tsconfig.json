@@ -27,5 +27,10 @@
     }
   },
   "exclude": ["node_modules"],
-  "include": ["src/**/*.ts", "src/**/*.tsx", "types/env.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/types/**/*.ts"],
+  "typeRoots": [
+    "./node_modules/@types",
+    "./src/types/typing-stubs",
+    "./src/types"
+  ]
 }

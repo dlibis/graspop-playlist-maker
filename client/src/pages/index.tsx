@@ -7,7 +7,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 
 /* eslint-disable object-curly-newline */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import axios from 'axios';
 import Head from 'next/head';
@@ -54,7 +54,7 @@ const Home: React.FC = () => {
     e.preventDefault();
     if (inputRef.current) {
       await toast.promise(
-        axios.get(`${apiUrl}/create-playlist?name=${inputRef.current.value}`),
+        axios.get(`${apiUrl}/spotify/create-playlist?name=${inputRef.current.value}`),
         {
           pending: 'Creating playlist',
           success: `${inputRef.current.value} playlist created!`,
@@ -67,7 +67,7 @@ const Home: React.FC = () => {
       );
 
       const { data } = await axios.get(
-        `${apiUrl}/data?query=https://api.spotify.com/v1/me/playlists`,
+        `${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me/playlists`,
       );
       handleUpdatePlaylist(data.items);
     }
@@ -86,7 +86,8 @@ const Home: React.FC = () => {
           similarArtistsArr.map(({ image, ...el }) => {
             const obj: { [k: string]: any } = {};
             /* eslint-disable-line */
-            return axios.get(`/artist/spotify/${el.name}`).then(({ data: artistData }) => {
+            const artist = el.name.replace('/', '\\');
+            return axios.get(`/artist/spotify/${artist}`).then(({ data: artistData }) => {
               obj.genres = artistData.genres;
               obj.href = artistData.href;
               obj.images = artistData.images;
@@ -134,7 +135,7 @@ const Home: React.FC = () => {
         <title>Spotify Mixmaster</title>
         <meta name="description" content="This is my page description." />
       </Head>
-      <nav className="flex items-center justify-between p-3 h-[var(--nav-height)]">
+      <nav className="flex items-center justify-between md:p-3 h-[var(--nav-height)]">
         <div className="flex items-center">
           <Logo />
           <div className="text-xl font-bold pb-3">Spotify Mixmaster</div>
@@ -142,7 +143,7 @@ const Home: React.FC = () => {
         <div>
           {displayName ? (
             <div className="dropdown dropdown-end">
-              <label tabIndex={0} className="btn bg-success text-white m-1">
+              <label tabIndex={0} className="btn bg-success text-xs md:text-md text-white m-1">
                 Hello {displayName}
               </label>
               <ul

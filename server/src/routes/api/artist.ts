@@ -26,10 +26,10 @@ router.get('/spotify/:id', (async (req, res) => {
     const referer = `${req.protocol}://${host}`;
     console.log(referer);
     const { id } = req.params;
-    const query = encodeURIComponent(
-      `https://api.spotify.com/v1/search?q=${id}&type=artist&market=US&limit=1`,
+
+    const { data } = await axiosReq(req.cookies['connect.sid']).get(
+      `https://api.spotify.com/v1/search?q=${id}&type=artist&limit=10`,
     );
-    const { data } = await axios.get(`${referer}/spotify/data?query=${query}`);
     const artistData = getValueByKey(['artists', 'items'], data)[0] || {};
     res.status(200).json({
       genres: artistData.genres,
