@@ -9,7 +9,10 @@ const Layout: React.FC<PropsWithChildren> = ({ children }) => {
     <>
       <Head>
         <title>Spotify Mixmaster</title>
-        <meta name="description" content="This is my page description." />
+        <meta
+          name="description"
+          content="Helper app for generating playlists without too much thinking"
+        />
       </Head>
       <div className="container mx-auto  px-2">
         <Navbar />
