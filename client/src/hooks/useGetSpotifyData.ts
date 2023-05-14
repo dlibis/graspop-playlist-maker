@@ -10,7 +10,7 @@ const useGetSpotifyData = () => {
   const [displayName, setDisplayName] = useState<string>('');
   const [playlistsItems, setPlaylistsItems] = useState<Record<string, any>[]>([]);
   const [loading, SetLoading] = useState<boolean>(false);
-  //const [responseStatus, setResponseStatus] = useState<number>(null);
+  const [responseStatus, setResponseStatus] = useState<number | null>(null);
   const [error, setError] = useState('');
 
   const handleUpdatePlaylist = (data) => {
@@ -29,6 +29,7 @@ const useGetSpotifyData = () => {
       setDisplayName(displayNameRes);
       setPlaylistsItems(playlistsItemsRes);
     } catch (e: any) {
+      setResponseStatus(e.response.status);
       console.error(e.message);
       setError(JSON.stringify(e));
     }
@@ -47,6 +48,7 @@ const useGetSpotifyData = () => {
     error,
     loading,
     handleUpdatePlaylist,
+    responseStatus,
   };
 };
 

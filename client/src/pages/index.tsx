@@ -17,6 +17,7 @@ import { useDebouncedCallback } from 'use-debounce';
 
 import { ArtistForm } from '@/components/ArtistForm';
 import { ArtistGrid } from '@/components/ArtistGrid';
+import { LoggingAlert } from '@/components/LoggingAlert';
 import { apiUrl } from '@/constants';
 import useGetSpotifyData from '@/hooks/useGetSpotifyData';
 
@@ -37,7 +38,13 @@ const Home: React.FC = () => {
 
   // eslint-disable-next-line prettier/prettier
   // @ts-ignore
-  const { playlistsItems: playlists, error, handleUpdatePlaylist } = useGetSpotifyData();
+  const {
+    playlistsItems: playlists,
+    error,
+    handleUpdatePlaylist,
+    responseStatus,
+    loading,
+  } = useGetSpotifyData();
 
   const [selectedArtist, setSelectedArtist] = useState<string | null>(null);
 
@@ -122,84 +129,55 @@ const Home: React.FC = () => {
     setSelectedArtist(value);
   };
 
+  if (loading) return <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24"></svg>;
+  if (responseStatus === 403) return <LoggingAlert />;
+  if (error) return <div className="text-transparent overflow-hidden">{error}</div>;
+
   return (
     <>
       <div className="container ">
-        {!error ? (
-          <>
-            <ToastContainer autoClose={2000} />
-            <div>
-              <ArtistForm
-                playlists={playlists}
-                debounced={debounced}
-                handleResetQuery={handleResetQuery}
-                selectedArtist={selectedArtist}
-              />
-              <div className="divider my-1" />
-              <div className="container ">
-                <div
-                  // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                  tabIndex={0}
-                  className="collapse collapse-plus border border-base-300 rounded-box bg-opacity-75 bg-slate-600"
-                >
-                  <input type="checkbox" />
-                  <div className="collapse-title text-md font-medium ">Create a new playlist</div>
-                  <div className="collapse-content">
-                    <form onSubmit={onSubmitCreate}>
-                      <div className="sm:space-x-4 sm:space-y-0 flex items-center justify-center flex-wrap space-y-4">
-                        <input
-                          className="input input-bordered focus:input-primary my-2"
-                          ref={inputRef}
-                          placeholder="Name of the playlist"
-                        />
-                        <button type="submit" className="btn rounded-full bg-primary">
-                          create new playlist
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <ArtistGrid
-                recomArtists={recomArtists.data}
-                loadingImage={loadingImage}
-                searchType={recomArtists.searchType}
-                handleFreezeResults={handleFreezeResults}
-                freezeResults={freezeResults}
-                handleSelectedArtist={handleSelectedArtist}
-              />
-            </div>
-
-            {/* </main> */}
-          </>
-        ) : (
-          <>
-            <div className=" container max-w-screen-sm mx-auto text-center">
-              <div className="alert shadow-lg">
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    className="stroke-info flex-shrink-0 w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        <ToastContainer autoClose={2000} />
+        <div>
+          <ArtistForm
+            playlists={playlists}
+            debounced={debounced}
+            handleResetQuery={handleResetQuery}
+            selectedArtist={selectedArtist}
+          />
+          <div className="divider my-1" />
+          <div className="container ">
+            <div
+              // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+              tabIndex={0}
+              className="collapse collapse-plus border border-base-300 rounded-box bg-opacity-75 bg-slate-600"
+            >
+              <input type="checkbox" />
+              <div className="collapse-title text-md font-medium ">Create a new playlist</div>
+              <div className="collapse-content">
+                <form onSubmit={onSubmitCreate}>
+                  <div className="sm:space-x-4 sm:space-y-0 flex items-center justify-center flex-wrap space-y-4">
+                    <input
+                      className="input input-bordered focus:input-primary my-2"
+                      ref={inputRef}
+                      placeholder="Name of the playlist"
                     />
-                  </svg>
-                  <span>
-                    Greetings, fellow user! The utility is ready for your command, but before
-                    proceeding, we require the proper credentials, please press the login button
-                  </span>
-                </div>
+                    <button type="submit" className="btn rounded-full bg-primary">
+                      create new playlist
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
-            <div className="text-transparent overflow-hidden">{error}</div>
-          </>
-        )}
+          </div>
+          <ArtistGrid
+            recomArtists={recomArtists.data}
+            loadingImage={loadingImage}
+            searchType={recomArtists.searchType}
+            handleFreezeResults={handleFreezeResults}
+            freezeResults={freezeResults}
+            handleSelectedArtist={handleSelectedArtist}
+          />
+        </div>
       </div>
     </>
   );

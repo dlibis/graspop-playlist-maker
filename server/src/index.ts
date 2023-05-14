@@ -50,6 +50,14 @@ const handle = app.getRequestHandler();
       await app.render(req, res, '/');
     });
 
+    server.get('/notRegistered', async (req: Request, res: Response) => {
+      await app.render(req, res, '/notRegistered');
+    });
+
+    server.get('/error', async (req: Request, res: Response) => {
+      await app.render(req, res, '/error');
+    });
+
     server.use('/api', api);
     server.use('/spotify', spotify);
     server.use('/artist', artistRoutes);

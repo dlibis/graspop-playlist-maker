@@ -63,6 +63,7 @@ router.get('/account', async (req, res) => {
     req.session.refresh_token = refresh_token;
     res.redirect('/'); // Redirect to a success page
   } catch (error) {
+    if (error.response.status === 403) res.redirect('/notRegistered');
     console.error(error);
     res.redirect('/error'); // Redirect to an error page
   }
