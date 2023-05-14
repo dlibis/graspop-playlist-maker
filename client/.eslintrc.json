@@ -1,5 +1,5 @@
 {
-  "extends": ["next/core-web-vitals", "airbnb", "airbnb-typescript"],
+  "extends": ["next/core-web-vitals"],
   // "parser": "@typescript-eslint/parser",
   // "parserOptions": {
   //   "project": "client/tsconfig.json",
@@ -25,6 +25,7 @@
     "comma-dangle": "off",
     "no-trailing-spaces": "warn",
     "@typescript-eslint/naming-convention": "off",
+    "react/jsx-one-expression-per-line": "off",
     "react/function-component-definition": [
       2,
       {

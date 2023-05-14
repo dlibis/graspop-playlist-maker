@@ -10,6 +10,7 @@ const nextConfig = {
 
     return config;
   },
+  images: { unoptimized: true },
 
   useFileSystemPublicRoutes: false,
   //output: 'export',

@@ -15,7 +15,6 @@ import Link from 'next/link';
 import { ToastContainer, toast } from 'react-toastify';
 import { useDebouncedCallback } from 'use-debounce';
 
-import Logo from '../../public/images/logo.svg';
 import { ArtistForm } from '@/components/ArtistForm';
 import { ArtistGrid } from '@/components/ArtistGrid';
 import { apiUrl } from '@/constants';
@@ -38,14 +37,7 @@ const Home: React.FC = () => {
 
   // eslint-disable-next-line prettier/prettier
   // @ts-ignore
-  const {
-    displayName,
-    playlistsItems: playlists,
-    error,
-    loading,
-    responseStatus,
-    handleUpdatePlaylist,
-  } = useGetSpotifyData();
+  const { playlistsItems: playlists, error, handleUpdatePlaylist } = useGetSpotifyData();
 
   const [selectedArtist, setSelectedArtist] = useState<string | null>(null);
 
@@ -54,7 +46,7 @@ const Home: React.FC = () => {
     e.preventDefault();
     if (inputRef.current) {
       await toast.promise(
-        axios.get(`${apiUrl}/spotify/create-playlist?name=${inputRef.current.value}`),
+        axios.get(`/spotify/create-playlist?name=${inputRef.current.value}`),
         {
           pending: 'Creating playlist',
           success: `${inputRef.current.value} playlist created!`,
@@ -67,7 +59,7 @@ const Home: React.FC = () => {
       );
 
       const { data } = await axios.get(
-        `${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me/playlists`,
+        `/spotify/data?query=https://api.spotify.com/v1/me/playlists`,
       );
       handleUpdatePlaylist(data.items);
     }
@@ -78,9 +70,19 @@ const Home: React.FC = () => {
     async (value) => {
       if (value === '' || freezeResults) return;
       try {
-        const { data: similarArtistsArr } = (await axios.get(`/artist/${value}`)) as {
-          data: { [k: string]: any }[];
-        };
+        // ts-ignore
+        const { data: similarArtistsArr } = await toast.promise(
+          axios.get(`/artist/${value}`),
+          {
+            pending: `Searching ${value}`,
+            success: 'Search completed 👌',
+            error: 'some error happened',
+          },
+          {
+            position: 'top-center',
+            theme: 'dark',
+          },
+        );
         setLoadingImage(true);
         Promise.all(
           similarArtistsArr.map(({ image, ...el }) => {
@@ -120,109 +122,58 @@ const Home: React.FC = () => {
     setSelectedArtist(value);
   };
 
-  const handleLogOut = async () => {
-    try {
-      await axios.get(`${apiUrl}/api/logout`);
-      window.location.reload(false);
-    } catch (error: any) {
-      console.error(error);
-    }
-  };
-
   return (
     <>
-      <Head>
-        <title>Spotify Mixmaster</title>
-        <meta name="description" content="This is my page description." />
-      </Head>
-      <nav className="flex items-center justify-between md:p-3 h-[var(--nav-height)]">
-        <div className="flex items-center">
-          <Logo />
-          <div className="text-xl font-bold pb-3">Spotify Mixmaster</div>
-        </div>
-        <div>
-          {displayName ? (
-            <div className="dropdown dropdown-end">
-              <label tabIndex={0} className="btn bg-success text-xs md:text-md text-white m-1">
-                Hello {displayName}
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu p-2 shadow bg-gray-900 rounded-box w-52"
-              >
-                <li>
-                  <button
-                    className="btn btn-link no-underline"
-                    type="button"
-                    onClick={handleLogOut}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
-          ) : (
-            <Link href="/api/auth">
-              <button
-                type="button"
-                className="rounded-full btn btn-sm md:btn-md bg-success text-white p-2 h-full"
-              >
-                <p className="text-xs md:text-base">Please login</p>
-              </button>
-            </Link>
-          )}
-        </div>
-      </nav>
-      <main>
-        <div className="container ">
-          {!error ? (
-            <>
-              <ToastContainer autoClose={2000} />
-              <div>
-                <ArtistForm
-                  playlists={playlists}
-                  debounced={debounced}
-                  handleResetQuery={handleResetQuery}
-                  selectedArtist={selectedArtist}
-                />
-                <div className="divider my-1" />
-                <div className="container ">
-                  <div
-                    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                    tabIndex={0}
-                    className="collapse collapse-plus border border-base-300 rounded-box bg-opacity-75 bg-slate-600"
-                  >
-                    <input type="checkbox" />
-                    <div className="collapse-title text-md font-medium ">Create a new playlist</div>
-                    <div className="collapse-content">
-                      <form onSubmit={onSubmitCreate}>
-                        <div className="sm:space-x-4 sm:space-y-0 flex items-center justify-center flex-wrap space-y-4">
-                          <input
-                            className="input input-bordered focus:input-primary my-2"
-                            ref={inputRef}
-                            placeholder="Name of the playlist"
-                          />
-                          <button type="submit" className="btn rounded-full bg-primary">
-                            create new playlist
-                          </button>
-                        </div>
-                      </form>
-                    </div>
+      <div className="container ">
+        {!error ? (
+          <>
+            <ToastContainer autoClose={2000} />
+            <div>
+              <ArtistForm
+                playlists={playlists}
+                debounced={debounced}
+                handleResetQuery={handleResetQuery}
+                selectedArtist={selectedArtist}
+              />
+              <div className="divider my-1" />
+              <div className="container ">
+                <div
+                  // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                  tabIndex={0}
+                  className="collapse collapse-plus border border-base-300 rounded-box bg-opacity-75 bg-slate-600"
+                >
+                  <input type="checkbox" />
+                  <div className="collapse-title text-md font-medium ">Create a new playlist</div>
+                  <div className="collapse-content">
+                    <form onSubmit={onSubmitCreate}>
+                      <div className="sm:space-x-4 sm:space-y-0 flex items-center justify-center flex-wrap space-y-4">
+                        <input
+                          className="input input-bordered focus:input-primary my-2"
+                          ref={inputRef}
+                          placeholder="Name of the playlist"
+                        />
+                        <button type="submit" className="btn rounded-full bg-primary">
+                          create new playlist
+                        </button>
+                      </div>
+                    </form>
                   </div>
                 </div>
-                <ArtistGrid
-                  recomArtists={recomArtists.data}
-                  loadingImage={loadingImage}
-                  searchType={recomArtists.searchType}
-                  handleFreezeResults={handleFreezeResults}
-                  freezeResults={freezeResults}
-                  handleSelectedArtist={handleSelectedArtist}
-                />
               </div>
+              <ArtistGrid
+                recomArtists={recomArtists.data}
+                loadingImage={loadingImage}
+                searchType={recomArtists.searchType}
+                handleFreezeResults={handleFreezeResults}
+                freezeResults={freezeResults}
+                handleSelectedArtist={handleSelectedArtist}
+              />
+            </div>
 
-              {/* </main> */}
-            </>
-          ) : responseStatus === 403 ? (
+            {/* </main> */}
+          </>
+        ) : (
+          <>
             <div className=" container max-w-screen-sm mx-auto text-center">
               <div className="alert shadow-lg">
                 <div>
@@ -244,32 +195,14 @@ const Home: React.FC = () => {
                     proceeding, we require the proper credentials, please press the login button
                   </span>
                 </div>
-                <div className="text-transparent">{responseStatus}</div>
               </div>
             </div>
-          ) : (
-            <div>{error}</div>
-          )}
-        </div>
-      </main>
+            <div className="text-transparent overflow-hidden">{error}</div>
+          </>
+        )}
+      </div>
     </>
   );
 };
 
-// export async function getStaticProps() {
-//   try {
-//     const res = await Promise.all([
-//       axios.get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me`),
-//       axios.get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me/playlists`),
-//     ]);
-//     const [user, playlists] = res;
-//     const displayName = getValueByKey(['data', 'display_name'], user);
-//     const playlistsItems = getValueByKey(['data', 'items'], playlists);
-
-//     return { props: { displayName, playlistsItems } };
-//   } catch (e: any) {
-//     console.error(e.message);
-//     return { props: { error: JSON.stringify(e) } };
-//   }
-// }
 export default Home;

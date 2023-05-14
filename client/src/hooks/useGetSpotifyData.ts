@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import axios from 'axios';
+import { cookies } from 'next/headers';
 
 import { apiUrl } from '@/constants';
 import { getValueByKey } from '@/utils/utils';
@@ -9,7 +10,7 @@ const useGetSpotifyData = () => {
   const [displayName, setDisplayName] = useState<string>('');
   const [playlistsItems, setPlaylistsItems] = useState<Record<string, any>[]>([]);
   const [loading, SetLoading] = useState<boolean>(false);
-  const [responseStatus, setResponseStatus] = useState<number>(null);
+  //const [responseStatus, setResponseStatus] = useState<number>(null);
   const [error, setError] = useState('');
 
   const handleUpdatePlaylist = (data) => {
@@ -29,7 +30,6 @@ const useGetSpotifyData = () => {
       setPlaylistsItems(playlistsItemsRes);
     } catch (e: any) {
       console.error(e.message);
-      setResponseStatus(e.response.status);
       setError(JSON.stringify(e));
     }
   };
@@ -46,7 +46,6 @@ const useGetSpotifyData = () => {
     playlistsItems,
     error,
     loading,
-    responseStatus,
     handleUpdatePlaylist,
   };
 };

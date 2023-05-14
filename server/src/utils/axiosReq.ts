@@ -1,10 +1,6 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { checkToken } from '@/middlewares/checkToken';
 
-// type Props = {
-//   userId?: string;
-//   options?: Record<string, any>;
-// };
 const axiosReq = (sid: string, options = {}) => {
   const defaultOptions = {
     method: 'get',
@@ -12,6 +8,7 @@ const axiosReq = (sid: string, options = {}) => {
       'Content-Type': 'application/json',
     },
   };
+  if (!sid) throw new Error('you need to re-login');
   const userId = sid?.split('.').at(0);
   // Create instance
   let instance = axios.create(defaultOptions);
@@ -19,7 +16,6 @@ const axiosReq = (sid: string, options = {}) => {
   instance.interceptors.request.use(async (req) => {
     const token = await checkToken(userId);
     req.headers.Authorization = token ? `Bearer ${token}` : '';
-    //console.log('Request:', JSON.stringify(req.headers, null, 2));
     return req;
   });
 

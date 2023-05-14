@@ -30,9 +30,7 @@ export const ArtistForm: React.FC<Props> = ({
   } = useForm<{ artist: string; playlist: string; full: boolean }>();
   const onSubmit = async (data) => {
     await toast.promise(
-      axios.get(
-        `${apiUrl}/spotify/get-artist?artist=${data.artist}&id=${data.playlist}&full=${data.full}`,
-      ),
+      axios.get(`/spotify/get-artist?artist=${data.artist}&id=${data.playlist}&full=${data.full}`),
       {
         pending: 'working on it...',
         success: `${data.artist} added to playlist 🤩`,
@@ -148,7 +146,7 @@ export const ArtistForm: React.FC<Props> = ({
             onChange={handleSetToggle}
           />
         </div>
-        <button className="btn btn-xs sm:btn-sm rounded-full bg-primary " type="submit">
+        <button className="btn btn-xs sm:btn-sm rounded-full bg-primary self-end" type="submit">
           Add Artist
         </button>
       </div>

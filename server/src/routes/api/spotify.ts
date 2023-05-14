@@ -101,9 +101,17 @@ router.get('/get-artist', async (req, res) => {
       // calculate needed iterations
       const iter = Math.ceil(total / limit);
       for (let i = 0; i < iter; i++) {
-        const { items: tracks } = await getAlbumTracks(album.id, 50 * i);
+        const { items: tracks } = await getAlbumTracks(
+          album.id,
+          req.cookies['connect.sid'],
+          50 * i,
+        );
         const tracks_uri: string[] = tracks.map(({ uri }) => uri);
-        await addTracksToPlaylist(tracks_uri, playlist_id, req.session);
+        await addTracksToPlaylist(
+          tracks_uri,
+          playlist_id,
+          req.cookies['connect.sid'],
+        );
       }
     }
   }
