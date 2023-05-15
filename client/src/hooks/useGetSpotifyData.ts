@@ -1,46 +1,60 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import axios from 'axios';
-import { cookies } from 'next/headers';
+import Cookies from 'js-cookie';
 
-import { apiUrl } from '@/constants';
 import { getValueByKey } from '@/utils/utils';
 
 const useGetSpotifyData = () => {
   const [displayName, setDisplayName] = useState<string>('');
   const [playlistsItems, setPlaylistsItems] = useState<Record<string, any>[]>([]);
   const [loading, SetLoading] = useState<boolean>(false);
-  const [responseStatus, setResponseStatus] = useState<number | null>(null);
   const [error, setError] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
+  const cookie = Cookies.get('connect.sid');
 
   const handleUpdatePlaylist = (data) => {
     setPlaylistsItems(data);
   };
 
-  const fetchData = async () => {
+  const fetchUserName = useCallback(async () => {
     try {
-      const res = await Promise.all([
-        axios.get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me`),
-        axios.get(`${apiUrl}/spotify/data?query=https://api.spotify.com/v1/me/playlists`),
-      ]);
-      const [user, playlists] = res;
-      const displayNameRes = getValueByKey(['data', 'display_name'], user);
-      const playlistsItemsRes = getValueByKey(['data', 'items'], playlists);
+      const res = await axios.get(`/spotify/data?query=https://api.spotify.com/v1/me`);
+      const displayNameRes = getValueByKey(['data', 'display_name'], res);
       setDisplayName(displayNameRes);
+    } catch (error: any) {
+      if (error.response.status === 403) {
+        Cookies.remove('connect.sid');
+      }
+      console.error(error.message);
+    }
+  }, []);
+
+  const fetchPlaylists = useCallback(async () => {
+    try {
+      const res = await axios.get(`/spotify/data?query=https://api.spotify.com/v1/me/playlists`);
+      const playlistsItemsRes = getValueByKey(['data', 'items'], res);
       setPlaylistsItems(playlistsItemsRes);
     } catch (e: any) {
-      setResponseStatus(e.response.status);
       console.error(e.message);
-      setError(JSON.stringify(e));
+      setError(JSON.stringify(error));
     }
-  };
+  }, [error]);
+
   useEffect(() => {
-    (async () => {
-      SetLoading(true);
-      await fetchData();
-      SetLoading(false);
-    })();
-  }, []);
+    cookie ? setLoggedIn(true) : setLoggedIn(false);
+  }, [cookie]);
+
+  useEffect(() => {
+    if (!loggedIn) {
+      return;
+    } else {
+      (async () => {
+        await fetchUserName();
+        await fetchPlaylists();
+      })();
+    }
+  }, [fetchPlaylists, fetchUserName, loggedIn]);
 
   return {
     displayName,
@@ -48,7 +62,7 @@ const useGetSpotifyData = () => {
     error,
     loading,
     handleUpdatePlaylist,
-    responseStatus,
+    loggedIn,
   };
 };
 

@@ -7,18 +7,15 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 
 /* eslint-disable object-curly-newline */
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import axios from 'axios';
-import Head from 'next/head';
-import Link from 'next/link';
-import { ToastContainer, toast } from 'react-toastify';
+import { Id, ToastContainer, toast } from 'react-toastify';
 import { useDebouncedCallback } from 'use-debounce';
 
 import { ArtistForm } from '@/components/ArtistForm';
 import { ArtistGrid } from '@/components/ArtistGrid';
 import { LoggingAlert } from '@/components/LoggingAlert';
-import { apiUrl } from '@/constants';
 import useGetSpotifyData from '@/hooks/useGetSpotifyData';
 
 // type Props = {
@@ -36,14 +33,16 @@ const Home: React.FC = () => {
     searchType: 'initial' | 'getData' | 'reset';
   }>({ data: [], searchType: 'initial' });
 
+  const toastId = useRef<Id>(null);
+
   // eslint-disable-next-line prettier/prettier
   // @ts-ignore
   const {
     playlistsItems: playlists,
     error,
     handleUpdatePlaylist,
-    responseStatus,
     loading,
+    loggedIn,
   } = useGetSpotifyData();
 
   const [selectedArtist, setSelectedArtist] = useState<string | null>(null);
@@ -72,6 +71,33 @@ const Home: React.FC = () => {
     }
   };
 
+  const getAdditionalData = (similarArtistsArr) => {
+    Promise.all(
+      similarArtistsArr.map(({ image, ...el }) => {
+        const obj: { [k: string]: any } = {};
+        /* eslint-disable-line */
+        const artist = el.name.replace('/', '');
+        return axios.get(`/artist/spotify/${artist}`).then(({ data: artistData }) => {
+          obj.genres = artistData.genres;
+          obj.href = artistData.href;
+          obj.images = artistData.images;
+          return { ...el, ...obj };
+        });
+      }),
+    )
+      .then((updatedArray) => {
+        setRecomArtists({ data: updatedArray, searchType: 'getData' });
+      })
+      .catch((e) => {
+        toast.dismiss();
+        toast.error(`${e.response?.data}`, {
+          position: 'top-center',
+          progress: undefined,
+          theme: 'dark',
+        });
+      });
+  };
+
   const debounced = useDebouncedCallback(
     // function
     async (value) => {
@@ -87,28 +113,26 @@ const Home: React.FC = () => {
           },
           {
             position: 'top-center',
+            autoClose: 1000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
             theme: 'dark',
           },
         );
+        if (!similarArtistsArr.length) throw Error('artist not found,check your query');
         setLoadingImage(true);
-        Promise.all(
-          similarArtistsArr.map(({ image, ...el }) => {
-            const obj: { [k: string]: any } = {};
-            /* eslint-disable-line */
-            const artist = el.name.replace('/', '\\');
-            return axios.get(`/artist/spotify/${artist}`).then(({ data: artistData }) => {
-              obj.genres = artistData.genres;
-              obj.href = artistData.href;
-              obj.images = artistData.images;
-              return { ...el, ...obj };
-            });
-          }),
-        ).then((updatedArray) => {
-          setRecomArtists({ data: updatedArray, searchType: 'getData' });
-        });
+        getAdditionalData(similarArtistsArr);
         setLoadingImage(false);
-      } catch (e) {
-        console.log(e);
+      } catch (e: any) {
+        toast.dismiss();
+        toast.error(`${e.message}`, {
+          position: 'top-center',
+          progress: undefined,
+          theme: 'dark',
+        });
       }
     },
     // delay in ms
@@ -121,16 +145,16 @@ const Home: React.FC = () => {
     setFreezeResults(false);
   };
 
-  const handleFreezeResults = (e: React.MouseEvent<HTMLInputElement, MouseEvent>) =>
-    // eslint-disable-next-line implicit-arrow-linebreak
-    setFreezeResults((e.target as HTMLInputElement).checked);
+  const handleFreezeResults = (
+    e: React.MouseEvent<HTMLInputElement, MouseEvent>, // eslint-disable-next-line implicit-arrow-linebreak
+  ) => setFreezeResults((e.target as HTMLInputElement).checked);
 
   const handleSelectedArtist = (value: string) => {
     setSelectedArtist(value);
   };
 
   if (loading) return <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24"></svg>;
-  if (responseStatus === 403) return <LoggingAlert />;
+  if (!loggedIn) return <LoggingAlert />;
   if (error) return <div className="text-transparent overflow-hidden">{error}</div>;
 
   return (

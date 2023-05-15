@@ -17,8 +17,10 @@ router.get('/getCookie', (req, res) => {
 
 router.get('/logout', (req, res) => {
   console.log('user logging out...');
-  const [id] = req.cookies['connect.sid'].split('.');
-  redisClient.v4.DEL(id);
+  if (req.cookies['connect.sid']) {
+    const [id] = req.cookies['connect.sid'].split('.');
+    redisClient.v4.DEL(id);
+  }
   res.status(200).send('done');
 });
 

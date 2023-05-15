@@ -3,9 +3,6 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-
-import { apiUrl } from '@/constants';
 
 type Props = {
   handleResetQuery: () => void;
@@ -28,16 +25,27 @@ export const ArtistForm: React.FC<Props> = ({
     resetField,
     formState: { errors },
   } = useForm<{ artist: string; playlist: string; full: boolean }>();
+
   const onSubmit = async (data) => {
     await toast.promise(
       axios.get(`/spotify/get-artist?artist=${data.artist}&id=${data.playlist}&full=${data.full}`),
       {
         pending: 'working on it...',
-        success: `${data.artist} added to playlist 🤩`,
-        error: `cant find ${data.artist} 🤔`,
+        success: `The playlist has been updated with ${data.artist}🤩`,
+        error: {
+          render({ data }) {
+            return data?.message;
+          },
+        },
       },
       {
         position: 'top-center',
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
         theme: 'dark',
       },
     );

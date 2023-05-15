@@ -42,7 +42,7 @@ const handle = app.getRequestHandler();
         resave: false,
         saveUninitialized: false,
         secret: 'keyboard cat',
-        cookie: { maxAge: 86400, httpOnly: false, secure: false },
+        cookie: { maxAge: 86400000, httpOnly: false, secure: false },
       }),
     );
 
